@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, BookOpen, LogOut, GraduationCap } from "lucide-react";
+import { LayoutDashboard, BookOpen, LogOut, GraduationCap, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 const links = [
   { href: "/dashboard", label: "Início", icon: LayoutDashboard },
   { href: "/cursos", label: "Meus Cursos", icon: BookOpen },
+  { href: "/ao-vivo", label: "Aula ao Vivo", icon: Video },
 ];
 
 export default function StudentSidebar({ user }: { user: { name?: string | null; email?: string | null } }) {
