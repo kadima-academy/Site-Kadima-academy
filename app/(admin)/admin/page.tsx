@@ -25,9 +25,9 @@ export default async function AdminDashboard() {
     <div className="p-8 max-w-5xl">
       {/* Header */}
       <div className="mb-10">
-        <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">Painel de Controle</p>
-        <h1 className="text-3xl font-semibold text-white tracking-tight">Dashboard</h1>
-        <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">Visão geral da plataforma Kadima Academy</p>
+        <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Painel de Controle</p>
+        <h1 className="text-4xl font-bold text-white tracking-tight">Dashboard</h1>
+        <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">Visão geral da plataforma Kadima Academy</p>
       </div>
 
       {/* Stats */}
@@ -46,8 +46,8 @@ export default async function AdminDashboard() {
               </div>
               <ArrowUpRight size={15} className="text-[rgba(201,169,122,0.3)] group-hover:text-[#C9A97A] transition-colors mt-1" />
             </div>
-            <p className="text-4xl font-bold text-white tabular-nums mb-1">{value}</p>
-            <p className="text-[11px] tracking-[3px] uppercase text-[rgba(255,255,255,0.35)] font-medium">{label}</p>
+            <p className="text-5xl font-bold text-white tabular-nums mb-2">{value}</p>
+            <p className="text-[11px] tracking-[4px] uppercase text-[rgba(255,255,255,0.4)] font-semibold">{label}</p>
           </Link>
         ))}
       </div>

@@ -17,9 +17,9 @@ export default async function CursosPage() {
     <div className="p-8 max-w-4xl">
       <div className="flex items-start justify-between mb-10">
         <div>
-          <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">Gestão</p>
-          <h1 className="text-3xl font-semibold text-white tracking-tight">Cursos</h1>
-          <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">{courses.length} curso(s) cadastrado(s)</p>
+          <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Gestão</p>
+          <h1 className="text-4xl font-bold text-white tracking-tight">Cursos</h1>
+          <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">{courses.length} curso(s) cadastrado(s)</p>
         </div>
         <Link href="/admin/cursos/novo">
           <Button size="sm" className="gap-1.5">

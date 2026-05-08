@@ -37,9 +37,9 @@ export default async function DashboardPage() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-10">
-        <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">{getGreeting()}</p>
-        <h1 className="text-3xl font-semibold text-white tracking-tight">{firstName}</h1>
-        <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">Escola Teológica Online · Kadima Academy</p>
+        <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">{getGreeting()}</p>
+        <h1 className="text-4xl font-bold text-white tracking-tight">{firstName}</h1>
+        <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">Escola Teológica Online · Kadima Academy</p>
       </div>
 
       {/* Divider */}

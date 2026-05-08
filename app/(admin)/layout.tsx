@@ -10,7 +10,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="flex h-screen overflow-hidden" style={{ background: "#060D1F" }}>
       <AdminSidebar user={session.user} />
       <main className="flex-1 overflow-y-auto">
-        {children}
+        <div className="max-w-6xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );

@@ -14,9 +14,9 @@ export default async function AlunosPage() {
     <div className="p-8 max-w-5xl">
       <div className="flex items-start justify-between mb-10">
         <div>
-          <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">Gestão</p>
-          <h1 className="text-3xl font-semibold text-white tracking-tight">Alunos</h1>
-          <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">{students.length} aluno(s) cadastrado(s)</p>
+          <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Gestão</p>
+          <h1 className="text-4xl font-bold text-white tracking-tight">Alunos</h1>
+          <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">{students.length} aluno(s) cadastrado(s)</p>
         </div>
         <Link href="/admin/alunos/novo">
           <Button size="sm" className="gap-1.5">
