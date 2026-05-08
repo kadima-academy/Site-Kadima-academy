@@ -7,6 +7,7 @@ const schema = z.object({
   title: z.string().min(2),
   youtubeUrl: z.string().min(5),
   description: z.string().optional(),
+  content: z.string().optional(),
   duration: z.string().optional(),
 });
 

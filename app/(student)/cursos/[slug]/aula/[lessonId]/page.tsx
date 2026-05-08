@@ -75,6 +75,22 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
           <p className="text-sm text-[rgba(255,255,255,0.5)] mb-6 leading-relaxed">{lesson.description}</p>
         )}
 
+        {lesson.content && (
+          <div className="rounded-2xl overflow-hidden mb-6" style={{
+            background: "rgba(15,26,61,0.5)",
+            border: "1px solid rgba(201,169,122,0.12)",
+          }}>
+            <div className="px-5 py-3 flex items-center gap-2" style={{ borderBottom: "1px solid rgba(201,169,122,0.08)", background: "rgba(201,169,122,0.03)" }}>
+              <span className="text-[10px] tracking-[3px] uppercase font-semibold text-[#C9A97A]">Material da Aula</span>
+            </div>
+            <div
+              className="p-6 prose-lesson"
+              dangerouslySetInnerHTML={{ __html: lesson.content }}
+              style={{ color: "rgba(255,255,255,0.8)", lineHeight: "1.8", fontSize: "15px" }}
+            />
+          </div>
+        )}
+
         {/* Navegação */}
         <div className="flex items-center justify-between pt-6 border-t border-[rgba(201,169,122,0.1)]">
           {prev ? (
