@@ -7,7 +7,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   if (!session) redirect("/login");
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#060D1F" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#0D0D0D" }}>
       <StudentSidebar user={session.user} />
       <main className="flex-1 overflow-y-auto">
         {children}

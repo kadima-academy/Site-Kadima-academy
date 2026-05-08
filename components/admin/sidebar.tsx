@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { BookOpen, Users, LayoutDashboard, LogOut, Video } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 const links = [
@@ -19,85 +18,82 @@ export default function AdminSidebar({ user }: { user: { name?: string | null; e
   const initials = user.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "A";
 
   return (
-    <aside className="w-64 flex flex-col shrink-0 relative" style={{
-      background: "linear-gradient(180deg, rgba(8,16,40,0.98) 0%, rgba(6,13,31,0.98) 100%)",
-      borderRight: "1px solid rgba(201,169,122,0.08)",
-    }}>
-      {/* Glow top */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(201,169,122,0.08) 0%, transparent 70%)" }} />
-
+    <aside
+      className="w-[220px] flex flex-col shrink-0 h-screen sticky top-0"
+      style={{ background: "#0a0a0a", borderRight: "1px solid #1e1e1e" }}
+    >
       {/* Logo */}
-      <div className="flex flex-col items-center pt-8 pb-6 px-6 relative">
-        <div className="relative mb-4">
-          <div className="absolute inset-0 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(201,169,122,0.2) 0%, transparent 70%)", transform: "scale(1.5)" }} />
-          <Image src="/logo-nova.png" alt="Kadima Academy" width={72} height={72}
-            className="relative z-10"
-            style={{ filter: "drop-shadow(0 0 24px rgba(201,169,122,0.4))" }} />
-        </div>
-        <h1 className="text-xs tracking-[5px] uppercase text-[#C9A97A] font-medium">Kadima</h1>
-        <p className="text-[10px] tracking-[3px] uppercase text-[rgba(255,255,255,0.3)] mt-0.5">Academy</p>
-        <div className="mt-3 px-3 py-1 rounded-full text-[9px] tracking-[2px] uppercase font-semibold"
-          style={{ background: "rgba(201,169,122,0.1)", border: "1px solid rgba(201,169,122,0.2)", color: "#C9A97A" }}>
-          Administrador
+      <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: "1px solid #1a1a1a" }}>
+        <Image src="/logo-nova.png" alt="Kadima Academy" width={34} height={34}
+          style={{ filter: "drop-shadow(0 0 8px rgba(201,169,122,0.3))" }} />
+        <div>
+          <p className="text-xs font-bold text-white leading-tight" style={{ fontFamily: "var(--font-barlow)", letterSpacing: "2px" }}>
+            KADIMA
+          </p>
+          <p className="text-[10px] leading-tight" style={{ color: "#C9A97A", letterSpacing: "1px" }}>
+            ACADEMY
+          </p>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="mx-5 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(201,169,122,0.15), transparent)" }} />
+      {/* Badge */}
+      <div className="px-5 py-3" style={{ borderBottom: "1px solid #1a1a1a" }}>
+        <span
+          className="text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest"
+          style={{ background: "rgba(201,169,122,0.1)", color: "#C9A97A", border: "1px solid rgba(201,169,122,0.2)" }}
+        >
+          Administrador
+        </span>
+      </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-4 flex flex-col gap-1 mt-2">
+      <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
         {links.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
-            <Link key={href} href={href}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 relative group",
-                active
-                  ? "text-[#C9A97A]"
-                  : "text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)]"
-              )}
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all"
               style={active ? {
-                background: "linear-gradient(90deg, rgba(201,169,122,0.12) 0%, rgba(201,169,122,0.04) 100%)",
-                border: "1px solid rgba(201,169,122,0.15)",
-              } : undefined}
+                background: "rgba(201,169,122,0.08)",
+                color: "#C9A97A",
+                borderLeft: "2px solid #C9A97A",
+              } : {
+                color: "#666",
+                borderLeft: "2px solid transparent",
+              }}
+              onMouseEnter={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; (e.currentTarget as HTMLElement).style.color = "#aaa"; } }}
+              onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#666"; } }}
             >
-              {active && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full"
-                  style={{ background: "linear-gradient(180deg, #D4B483, #C9A97A)" }} />
-              )}
-              <div className={cn(
-                "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
-                active ? "bg-[rgba(201,169,122,0.15)]" : "bg-[rgba(255,255,255,0.04)] group-hover:bg-[rgba(255,255,255,0.07)]"
-              )}>
-                <Icon size={15} />
-              </div>
-              <span className="tracking-wide font-medium">{label}</span>
+              <Icon size={15} />
+              <span className="font-medium text-[13px]">{label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Divider */}
-      <div className="mx-5 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(201,169,122,0.1), transparent)" }} />
-
       {/* User */}
-      <div className="p-4">
-        <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-          style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-[#060D1F] shrink-0"
-            style={{ background: "linear-gradient(135deg, #D4B483, #B8924A)" }}>
+      <div className="px-3 pb-4" style={{ borderTop: "1px solid #1a1a1a", paddingTop: "12px" }}>
+        <div className="flex items-center gap-3 px-2 py-2 rounded-lg" style={{ background: "#111" }}>
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+            style={{ background: "linear-gradient(135deg,#C9A97A,#9A7A50)", color: "#0D0D0D" }}
+          >
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-white truncate">{user.name}</p>
-            <p className="text-[10px] text-[rgba(255,255,255,0.3)] truncate">{user.email}</p>
+            <p className="text-xs font-semibold text-white truncate">{user.name}</p>
+            <p className="text-[10px] truncate" style={{ color: "#555" }}>{user.email}</p>
           </div>
-          <button onClick={() => signOut({ callbackUrl: "/login" })}
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
             title="Sair"
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[rgba(255,255,255,0.25)] hover:text-red-400 hover:bg-red-900/20 transition-all">
+            className="shrink-0 transition-colors"
+            style={{ color: "#444" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#444")}
+          >
             <LogOut size={13} />
           </button>
         </div>

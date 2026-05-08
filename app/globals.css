@@ -1,39 +1,55 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ── Kadima Academy — Paleta ── */
-  --color-ka-black:      #060D1F;
-  --color-ka-navy:       #0F1A3D;
-  --color-ka-navy-mid:   #1B2E6B;
-  --color-ka-navy-light: #2A4490;
-  --color-ka-gold:       #C9A97A;
-  --color-ka-gold-light: #E8D5A8;
-  --color-ka-gold-dark:  #9A7A50;
-  --color-ka-white:      #FFFFFF;
-  --color-ka-cream:      #F8F5EF;
-  --color-ka-muted:      rgba(255,255,255,0.45);
-  --color-ka-border:     rgba(201,169,122,0.18);
+  --color-gold:        #C9A97A;
+  --color-gold-light:  #E8D5A8;
+  --color-gold-dim:    rgba(201,169,122,0.5);
 
-  /* ── Semânticos ── */
-  --color-background: var(--color-ka-black);
-  --color-foreground: var(--color-ka-white);
-  --color-surface:    var(--color-ka-navy);
-  --color-accent:     var(--color-ka-gold);
+  --color-bg:          #0D0D0D;
+  --color-card:        #111111;
+  --color-card2:       #161616;
+  --color-border:      #222222;
+  --color-border-soft: #1a1a1a;
+
+  --color-text:        #FFFFFF;
+  --color-muted:       #888888;
+  --color-subtle:      #555555;
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-sans:    "Poppins", sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #060D1F;
-  color: #FFFFFF;
-  font-family: 'Inter', 'Georgia', sans-serif;
+  background: #0D0D0D;
+  color: #fff;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #060D1F; }
-::-webkit-scrollbar-thumb { background: rgba(201,169,122,0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(201,169,122,0.6); }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0D0D0D; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+.font-display { font-family: var(--font-display); }
+
+.prose-lesson h1, .prose-lesson h2, .prose-lesson h3 {
+  color: #fff;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.prose-lesson p { margin-bottom: 1em; color: rgba(255,255,255,0.75); }
+.prose-lesson ul, .prose-lesson ol { padding-left: 1.5em; margin-bottom: 1em; color: rgba(255,255,255,0.75); }
+.prose-lesson li { margin-bottom: 0.3em; }
+.prose-lesson strong { color: #C9A97A; }
+.prose-lesson a { color: #C9A97A; text-decoration: underline; }
+.prose-lesson blockquote {
+  border-left: 3px solid rgba(201,169,122,0.4);
+  padding-left: 1em;
+  color: rgba(255,255,255,0.5);
+  margin: 1em 0;
+}
