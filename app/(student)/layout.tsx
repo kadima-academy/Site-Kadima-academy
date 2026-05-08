@@ -10,9 +10,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
     <div className="flex h-screen overflow-hidden" style={{ background: "#060D1F" }}>
       <StudentSidebar user={session.user} />
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );
