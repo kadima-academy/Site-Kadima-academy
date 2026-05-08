@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ── Kadima Academy — Paleta ── */
+  --color-ka-black:      #060D1F;
+  --color-ka-navy:       #0F1A3D;
+  --color-ka-navy-mid:   #1B2E6B;
+  --color-ka-navy-light: #2A4490;
+  --color-ka-gold:       #C9A97A;
+  --color-ka-gold-light: #E8D5A8;
+  --color-ka-gold-dark:  #9A7A50;
+  --color-ka-white:      #FFFFFF;
+  --color-ka-cream:      #F8F5EF;
+  --color-ka-muted:      rgba(255,255,255,0.45);
+  --color-ka-border:     rgba(201,169,122,0.18);
+
+  /* ── Semânticos ── */
+  --color-background: var(--color-ka-black);
+  --color-foreground: var(--color-ka-white);
+  --color-surface:    var(--color-ka-navy);
+  --color-accent:     var(--color-ka-gold);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #060D1F;
+  color: #FFFFFF;
+  font-family: 'Inter', 'Georgia', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #060D1F; }
+::-webkit-scrollbar-thumb { background: rgba(201,169,122,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,169,122,0.6); }
