@@ -21,6 +21,10 @@ export default function JitsiMeet({ roomName, displayName, email }: Props) {
   const apiRef = useRef<any>(null);
 
   useEffect(() => {
+    fetch("/api/live/attendance", { method: "POST" }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://meet.jit.si/external_api.js";
     script.async = true;

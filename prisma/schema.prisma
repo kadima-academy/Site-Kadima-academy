@@ -65,10 +65,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts    Account[]
-  sessions    Session[]
-  enrollments Enrollment[]
-  progress    LessonProgress[]
+  accounts       Account[]
+  sessions       Session[]
+  enrollments    Enrollment[]
+  progress       LessonProgress[]
+  liveAttendance LiveAttendance[]
 }
 
 // ── LMS ───────────────────────────────────────────────────────
@@ -141,4 +142,15 @@ model LessonProgress {
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
+}
+
+model LiveAttendance {
+  id       String   @id @default(cuid())
+  userId   String
+  date     String
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }

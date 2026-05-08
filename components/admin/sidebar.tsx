@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { BookOpen, Users, LayoutDashboard, LogOut } from "lucide-react";
+import { BookOpen, Users, LayoutDashboard, LogOut, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -11,6 +11,7 @@ const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/cursos", label: "Cursos", icon: BookOpen },
   { href: "/admin/alunos", label: "Alunos", icon: Users },
+  { href: "/admin/ao-vivo", label: "Ao Vivo", icon: Video },
 ];
 
 export default function AdminSidebar({ user }: { user: { name?: string | null; email?: string | null } }) {
