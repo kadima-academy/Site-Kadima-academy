@@ -31,23 +31,25 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-5 mb-10">
+      <div className="grid grid-cols-3 gap-6 mb-12">
         {stats.map(({ label, value, icon: Icon, href, color, glow }) => (
           <Link key={label} href={href}
-            className="rounded-2xl p-6 group transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5"
+            className="rounded-3xl group transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1"
             style={{
-              background: `linear-gradient(135deg, rgba(15,26,61,0.8) 0%, rgba(10,18,45,0.9) 100%)`,
-              border: "1px solid rgba(201,169,122,0.12)",
-              boxShadow: `0 4px 24px ${glow}`,
+              background: "linear-gradient(145deg, rgba(18,30,72,0.9) 0%, rgba(10,18,45,0.95) 100%)",
+              border: "1px solid rgba(201,169,122,0.14)",
+              boxShadow: `0 8px 32px ${glow}, 0 2px 8px rgba(0,0,0,0.3)`,
+              padding: "28px 28px 24px",
+              minHeight: "160px",
             }}>
-            <div className="flex items-start justify-between mb-5">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: color }}>
-                <Icon size={19} className="text-[#C9A97A]" />
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: color, border: "1px solid rgba(201,169,122,0.15)" }}>
+                <Icon size={20} className="text-[#C9A97A]" />
               </div>
-              <ArrowUpRight size={15} className="text-[rgba(201,169,122,0.3)] group-hover:text-[#C9A97A] transition-colors mt-1" />
+              <ArrowUpRight size={16} className="text-[rgba(201,169,122,0.25)] group-hover:text-[#C9A97A] transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
-            <p className="text-5xl font-bold text-white tabular-nums mb-2">{value}</p>
-            <p className="text-[11px] tracking-[4px] uppercase text-[rgba(255,255,255,0.4)] font-semibold">{label}</p>
+            <p className="text-[56px] font-black text-white tabular-nums leading-none mb-3">{value}</p>
+            <p className="text-[11px] tracking-[4px] uppercase font-bold" style={{ color: "rgba(201,169,122,0.6)" }}>{label}</p>
           </Link>
         ))}
       </div>
