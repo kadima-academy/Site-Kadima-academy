@@ -11,59 +11,90 @@ export default async function AlunosPage() {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-8 max-w-5xl">
+      <div className="flex items-start justify-between mb-10">
         <div>
-          <p className="text-xs tracking-[3px] uppercase text-[#C9A97A] mb-1">Gestão</p>
-          <h1 className="text-2xl font-semibold text-white tracking-wide">Alunos</h1>
+          <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">Gestão</p>
+          <h1 className="text-3xl font-semibold text-white tracking-tight">Alunos</h1>
+          <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">{students.length} aluno(s) cadastrado(s)</p>
         </div>
         <Link href="/admin/alunos/novo">
-          <Button size="sm"><Plus size={14} /> Cadastrar Aluno</Button>
+          <Button size="sm" className="gap-1.5">
+            <Plus size={14} strokeWidth={2.5} />
+            Cadastrar Aluno
+          </Button>
         </Link>
       </div>
 
       {students.length === 0 ? (
-        <div className="rounded-2xl border border-[rgba(201,169,122,0.12)] p-16 text-center"
-          style={{ background: "rgba(15,26,61,0.3)" }}>
-          <Users size={40} className="text-[rgba(201,169,122,0.3)] mx-auto mb-4" />
-          <p className="text-[rgba(255,255,255,0.4)] text-sm">Nenhum aluno cadastrado ainda.</p>
+        <div className="rounded-2xl p-16 text-center" style={{
+          background: "rgba(15,26,61,0.3)",
+          border: "1px solid rgba(201,169,122,0.1)",
+        }}>
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            style={{ background: "rgba(201,169,122,0.08)", border: "1px solid rgba(201,169,122,0.12)" }}>
+            <Users size={28} className="text-[rgba(201,169,122,0.4)]" />
+          </div>
+          <p className="text-[rgba(255,255,255,0.5)] text-sm mb-1">Nenhum aluno cadastrado</p>
+          <p className="text-[rgba(255,255,255,0.25)] text-xs">Cadastre o primeiro aluno da plataforma</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-[rgba(201,169,122,0.12)] overflow-hidden"
-          style={{ background: "rgba(15,26,61,0.4)" }}>
+        <div className="rounded-2xl overflow-hidden" style={{
+          background: "rgba(10,18,45,0.6)",
+          border: "1px solid rgba(201,169,122,0.1)",
+        }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[rgba(201,169,122,0.08)]">
-                {["Nome", "E-mail", "Igreja", "Cursos", "Cadastro", ""].map(h => (
-                  <th key={h} className="text-left px-5 py-3 text-[10px] tracking-[2px] uppercase text-[rgba(255,255,255,0.3)]">{h}</th>
+              <tr style={{ borderBottom: "1px solid rgba(201,169,122,0.08)", background: "rgba(201,169,122,0.03)" }}>
+                {["Aluno", "E-mail", "Igreja", "Cursos", "Cadastro", ""].map(h => (
+                  <th key={h} className="text-left px-5 py-3.5 text-[10px] tracking-[2px] uppercase text-[rgba(255,255,255,0.3)] font-semibold">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[rgba(201,169,122,0.06)]">
-              {students.map(s => (
-                <tr key={s.id} className="hover:bg-[rgba(255,255,255,0.02)] transition-colors">
-                  <td className="px-5 py-4 text-white font-medium">{s.name}</td>
-                  <td className="px-5 py-4 text-[rgba(255,255,255,0.5)]">{s.email}</td>
-                  <td className="px-5 py-4 text-[rgba(255,255,255,0.4)]">{s.church ?? "—"}</td>
-                  <td className="px-5 py-4">
-                    <div className="flex flex-wrap gap-1">
+            <tbody>
+              {students.map((s, i) => {
+                const initials = s.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "?";
+                return (
+                  <tr key={s.id}
+                    className="hover:bg-[rgba(255,255,255,0.025)] transition-colors"
+                    style={{ borderBottom: i < students.length - 1 ? "1px solid rgba(201,169,122,0.05)" : "none" }}>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-[#060D1F] shrink-0"
+                          style={{ background: "linear-gradient(135deg, #D4B483, #B8924A)" }}>
+                          {initials}
+                        </div>
+                        <span className="font-medium text-white">{s.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-[rgba(255,255,255,0.45)] text-[13px]">{s.email}</td>
+                    <td className="px-5 py-4 text-[rgba(255,255,255,0.35)] text-[13px]">{s.church ?? "—"}</td>
+                    <td className="px-5 py-4">
                       {s.enrollments.length === 0
-                        ? <span className="text-[rgba(255,255,255,0.25)] text-xs">Nenhum</span>
-                        : s.enrollments.map(e => (
-                          <span key={e.course.title} className="text-[10px] bg-[rgba(201,169,122,0.1)] text-[#C9A97A] px-2 py-0.5 rounded-full">{e.course.title}</span>
-                        ))}
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-[rgba(255,255,255,0.3)] text-xs">
-                    {new Date(s.createdAt).toLocaleDateString("pt-BR")}
-                  </td>
-                  <td className="px-5 py-4">
-                    <Link href={`/admin/alunos/${s.id}`}>
-                      <Button variant="ghost" size="sm">Ver</Button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                        ? <span className="text-[rgba(255,255,255,0.2)] text-xs">Nenhum</span>
+                        : (
+                          <div className="flex flex-wrap gap-1">
+                            {s.enrollments.map(e => (
+                              <span key={e.course.title}
+                                className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                                style={{ background: "rgba(201,169,122,0.1)", border: "1px solid rgba(201,169,122,0.2)", color: "#C9A97A" }}>
+                                {e.course.title}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                    </td>
+                    <td className="px-5 py-4 text-[rgba(255,255,255,0.3)] text-[12px]">
+                      {new Date(s.createdAt).toLocaleDateString("pt-BR")}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Link href={`/admin/alunos/${s.id}`}>
+                        <Button variant="ghost" size="sm">Ver</Button>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

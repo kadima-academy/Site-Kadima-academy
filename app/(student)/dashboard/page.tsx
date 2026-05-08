@@ -1,7 +1,14 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { BookOpen, Play } from "lucide-react";
+import { BookOpen, Play, ChevronRight } from "lucide-react";
+
+function getGreeting() {
+  const h = new Date().getUTCHours() - 3;
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+}
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -24,72 +31,115 @@ export default async function DashboardPage() {
     },
   });
 
+  const firstName = session.user.name?.split(" ")[0] ?? "Aluno";
+
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <p className="text-xs tracking-[3px] uppercase text-[#C9A97A] mb-1">Bem-vindo</p>
-        <h1 className="text-2xl font-semibold text-white">{session.user.name}</h1>
-        <p className="text-sm text-[rgba(255,255,255,0.4)] mt-1">Escola Teológica Online · Kadima Academy</p>
+      {/* Header */}
+      <div className="mb-10">
+        <p className="text-[10px] tracking-[4px] uppercase text-[#C9A97A] mb-2">{getGreeting()}</p>
+        <h1 className="text-3xl font-semibold text-white tracking-tight">{firstName}</h1>
+        <p className="text-sm text-[rgba(255,255,255,0.35)] mt-1">Escola Teológica Online · Kadima Academy</p>
       </div>
 
+      {/* Divider */}
+      <div className="h-px mb-8" style={{ background: "linear-gradient(90deg, rgba(201,169,122,0.15), transparent)" }} />
+
       {enrollments.length === 0 ? (
-        <div className="rounded-2xl border border-[rgba(201,169,122,0.12)] p-16 text-center"
-          style={{ background: "rgba(15,26,61,0.3)" }}>
-          <BookOpen size={40} className="text-[rgba(201,169,122,0.3)] mx-auto mb-4" />
-          <p className="text-[rgba(255,255,255,0.4)] text-sm">Você ainda não está matriculado em nenhum curso.</p>
-          <p className="text-[rgba(255,255,255,0.25)] text-xs mt-2">Entre em contato com a administração para se matricular.</p>
+        <div className="rounded-2xl p-16 text-center max-w-md" style={{
+          background: "linear-gradient(135deg, rgba(15,26,61,0.4) 0%, rgba(10,18,45,0.5) 100%)",
+          border: "1px solid rgba(201,169,122,0.1)",
+        }}>
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center"
+            style={{ background: "rgba(201,169,122,0.08)", border: "1px solid rgba(201,169,122,0.12)" }}>
+            <BookOpen size={28} className="text-[rgba(201,169,122,0.4)]" />
+          </div>
+          <p className="text-[rgba(255,255,255,0.6)] text-sm font-medium mb-1">Nenhum curso ainda</p>
+          <p className="text-[rgba(255,255,255,0.25)] text-xs leading-relaxed">
+            Entre em contato com a administração para se matricular em um curso.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
-          {enrollments.map(({ course }) => {
-            const allLessons = course.modules.flatMap(m => m.lessons);
-            const done = allLessons.filter(l => l.progress[0]?.completed).length;
-            const total = allLessons.length;
-            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-            const firstLesson = course.modules[0]?.lessons[0];
+        <>
+          <p className="text-[10px] tracking-[3px] uppercase text-[rgba(255,255,255,0.3)] mb-4 font-medium">
+            Meus Cursos · {enrollments.length}
+          </p>
+          <div className="grid grid-cols-1 gap-5 max-w-2xl">
+            {enrollments.map(({ course }) => {
+              const allLessons = course.modules.flatMap(m => m.lessons);
+              const done = allLessons.filter(l => l.progress[0]?.completed).length;
+              const total = allLessons.length;
+              const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+              const nextLesson = allLessons.find(l => !l.progress[0]?.completed) ?? allLessons[0];
 
-            return (
-              <div key={course.id}
-                className="rounded-2xl border border-[rgba(201,169,122,0.12)] overflow-hidden hover:border-[rgba(201,169,122,0.25)] transition-all group"
-                style={{ background: "rgba(15,26,61,0.5)" }}>
+              return (
+                <div key={course.id}
+                  className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(15,26,61,0.7) 0%, rgba(10,18,45,0.8) 100%)",
+                    border: "1px solid rgba(201,169,122,0.12)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
+                  }}>
 
-                {/* Thumbnail */}
-                <div className="h-36 bg-gradient-to-br from-[#0F1A3D] to-[#1B2E6B] relative overflow-hidden">
-                  {course.thumbnail
-                    ? <img src={course.thumbnail} alt="" className="w-full h-full object-cover opacity-60" />
-                    : <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen size={36} className="text-[rgba(201,169,122,0.25)]" />
-                      </div>}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#060D1F] via-transparent" />
-                  {pct > 0 && (
-                    <div className="absolute bottom-3 right-3 bg-[rgba(6,13,31,0.85)] px-2 py-1 rounded-full text-xs text-[#C9A97A] font-semibold">
-                      {pct}%
-                    </div>
-                  )}
-                </div>
+                  {/* Thumbnail banner */}
+                  <div className="h-32 relative overflow-hidden"
+                    style={{ background: "linear-gradient(135deg, #0F1A3D 0%, #1B2E6B 100%)" }}>
+                    {course.thumbnail
+                      ? <img src={course.thumbnail} alt="" className="w-full h-full object-cover opacity-50" />
+                      : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <BookOpen size={40} className="text-[rgba(201,169,122,0.15)]" />
+                        </div>
+                      )}
+                    <div className="absolute inset-0" style={{
+                      background: "linear-gradient(to bottom, transparent 30%, rgba(6,13,31,0.9) 100%)"
+                    }} />
 
-                <div className="p-5">
-                  <h2 className="text-sm font-semibold text-white mb-1">{course.title}</h2>
-                  <p className="text-xs text-[rgba(255,255,255,0.35)] mb-4">{done}/{total} aulas concluídas</p>
-
-                  {/* Barra de progresso */}
-                  <div className="h-1 bg-[rgba(255,255,255,0.08)] rounded-full mb-4">
-                    <div className="h-full bg-gradient-to-r from-[#C9A97A] to-[#E8D5A8] rounded-full transition-all"
-                      style={{ width: `${pct}%` }} />
+                    {pct === 100 && (
+                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide"
+                        style={{ background: "rgba(16,185,129,0.2)", border: "1px solid rgba(16,185,129,0.3)", color: "#6ee7b7" }}>
+                        ✓ Concluído
+                      </div>
+                    )}
                   </div>
 
-                  {firstLesson && (
-                    <Link href={`/cursos/${course.slug}/aula/${firstLesson.id}`}
-                      className="inline-flex items-center gap-2 text-xs text-[#C9A97A] hover:text-[#E8D5A8] transition-colors font-medium">
-                      <Play size={12} fill="currentColor" />
-                      {pct > 0 ? "Continuar" : "Começar"}
-                    </Link>
-                  )}
+                  <div className="p-5">
+                    <h2 className="text-base font-semibold text-white mb-1">{course.title}</h2>
+                    <p className="text-[12px] text-[rgba(255,255,255,0.35)] mb-4">
+                      {done} de {total} aula{total !== 1 ? "s" : ""} concluída{done !== 1 ? "s" : ""}
+                    </p>
+
+                    {/* Progress bar */}
+                    <div className="h-1.5 rounded-full mb-4 overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                      <div className="h-full rounded-full transition-all duration-700"
+                        style={{
+                          width: `${pct}%`,
+                          background: pct === 100
+                            ? "linear-gradient(90deg, #6ee7b7, #34d399)"
+                            : "linear-gradient(90deg, #C9A97A, #E8D5A8)",
+                        }} />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-[#C9A97A]">{pct}% completo</span>
+                      {nextLesson && (
+                        <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`}
+                          className="flex items-center gap-2 text-xs font-semibold text-[#C9A97A] hover:text-[#E8D5A8] transition-colors group/btn">
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center"
+                            style={{ background: "rgba(201,169,122,0.15)" }}>
+                            <Play size={9} fill="currentColor" />
+                          </div>
+                          {pct > 0 && pct < 100 ? "Continuar" : pct === 100 ? "Rever" : "Começar"}
+                          <ChevronRight size={13} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
