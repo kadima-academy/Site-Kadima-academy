@@ -250,7 +250,7 @@ export default function LiveControls({ activeSession }: { activeSession: LiveSes
           <input
             value={roomName}
             onChange={e => setRoomName(e.target.value)}
-            placeholder="kadima-teologia-2026 (deixe em branco para gerar)"
+            placeholder="Ex: kadima-teologia-2026 (espaços viram hífens automaticamente)"
             style={{
               width: "100%", background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(201,169,122,0.12)", borderRadius: 10,
