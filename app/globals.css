@@ -285,7 +285,7 @@ body {
 }
 
 .ka-thumb {
-  position: relative; height: 180px;
+  position: relative; height: 260px;
   background:
     radial-gradient(ellipse at 30% 30%, rgba(201,169,122,0.20) 0%, transparent 55%),
     linear-gradient(140deg, #0A1129 0%, #14215A 50%, #0A1129 100%);
