@@ -158,7 +158,7 @@ export default function LiveControls({ activeSession }: { activeSession: LiveSes
               <button
                 onClick={() => setShowRoom(v => !v)}
                 style={{
-                  padding: "9px 18px", borderRadius: 10, cursor: "pointer", border: "none",
+                  padding: "9px 18px", borderRadius: 10, cursor: "pointer",
                   background: showRoom
                     ? "rgba(52,211,153,0.15)"
                     : "linear-gradient(135deg, var(--gold), var(--gold-deep))",
