@@ -39,6 +39,12 @@ export default function JitsiMeet({ roomName, displayName, email }: Props) {
         configOverwrite: {
           startWithAudioMuted: true,
           disableDeepLinking: true,
+          prejoinPageEnabled: false,
+          requireDisplayName: false,
+          enableLobbyChat: false,
+          lobby: { autoKnock: false, enableChat: false },
+          disableModeratorIndicator: false,
+          startAudioOnly: false,
         },
         interfaceConfigOverwrite: {
           SHOW_JITSI_WATERMARK: false,
