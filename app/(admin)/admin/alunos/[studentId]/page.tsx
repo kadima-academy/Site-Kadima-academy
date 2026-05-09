@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import EnrollButton from "@/components/admin/enroll-button";
+import UnenrollButton from "@/components/admin/unenroll-button";
 
 export default async function StudentProfilePage({ params }: { params: Promise<{ studentId: string }> }) {
   const { studentId } = await params;
@@ -116,7 +117,8 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
           <p style={{ fontSize: 13, color: "var(--text-muted)", padding: "24px 0" }}>Nenhum curso matriculado.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {student.enrollments.map(({ course }) => {
+            {student.enrollments.map((enrollment) => {
+              const { course } = enrollment;
               const totalLessons = course.modules.reduce((a, m) => a + m.lessons.length, 0);
               const doneLessons = course.modules.reduce((a, m) => a + m.lessons.filter(l => l.progress[0]?.completed).length, 0);
               const pct = totalLessons > 0 ? Math.round((doneLessons / totalLessons) * 100) : 0;
@@ -128,16 +130,19 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
                   border: "1px solid rgba(201,169,122,0.10)",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
                 }}>
-                  <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(201,169,122,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div>
+                  <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(201,169,122,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ flex: 1 }}>
                       <h3 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 13, letterSpacing: 1.5, color: "var(--text-primary)", marginBottom: 3 }}>
                         {course.title}
                       </h3>
                       <p style={{ fontSize: 11, color: "var(--text-muted)" }}>{doneLessons}/{totalLessons} aulas concluídas</p>
                     </div>
-                    <span style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, color: "var(--gold-light)" }}>
-                      {pct}%
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      <span style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, color: "var(--gold-light)" }}>
+                        {pct}%
+                      </span>
+                      <UnenrollButton enrollmentId={enrollment.id} courseName={course.title} />
+                    </div>
                   </div>
                   <div style={{ height: 4, background: "rgba(255,255,255,0.05)" }}>
                     <div className="ka-progress-fill" style={{ width: `${pct}%`, height: "100%" }} />

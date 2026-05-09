@@ -46,6 +46,10 @@ export async function POST(req: NextRequest) {
       },
       auto_return: "approved",
       notification_url: `${baseUrl}/api/webhooks/mercadopago`,
+      payment_methods: {
+        installments: 12,
+        default_installments: 1,
+      },
       external_reference: `${session.user.id}:${courseId}`,
       statement_descriptor: "KADIMA ACADEMY",
     },
