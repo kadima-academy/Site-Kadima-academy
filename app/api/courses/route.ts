@@ -7,7 +7,9 @@ import { z } from "zod";
 const createSchema = z.object({
   title: z.string().min(2),
   description: z.string().optional(),
-  thumbnail: z.string().url().optional().or(z.literal("")),
+  thumbnail: z.string().optional(),
+  price: z.number().positive().optional(),
+  paymentType: z.enum(["ONE_TIME", "MONTHLY"]).optional(),
 });
 
 export async function GET() {
@@ -34,11 +36,11 @@ export async function POST(req: NextRequest) {
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const { title, description, thumbnail } = parsed.data;
+  const { title, description, thumbnail, price, paymentType } = parsed.data;
   const slug = slugify(title);
 
   const course = await prisma.course.create({
-    data: { title, slug, description, thumbnail: thumbnail || null },
+    data: { title, slug, description, thumbnail: thumbnail || null, price: price ?? null, paymentType: paymentType ?? "ONE_TIME" },
   });
 
   return NextResponse.json(course, { status: 201 });
