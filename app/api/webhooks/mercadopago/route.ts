@@ -50,9 +50,10 @@ export async function POST(req: NextRequest) {
     try {
       mpData = await mpPayment.get({ id: paymentId });
     } catch {
-      // ID inválido ou não encontrado (comum em simulações do painel MP)
       return NextResponse.json({ ok: true });
     }
+
+    if (!mpData) return NextResponse.json({ ok: true });
 
     const status = mpData.status;
     const externalRef = mpData.external_reference;
