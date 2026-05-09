@@ -120,13 +120,14 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
   return (
     <div style={{ maxWidth: 900 }}>
 
-      {/* ── Header ── */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 36, gap: 20 }}>
+      {/* ── Header sticky ── */}
+      <div style={{ position: "sticky", top: 0, zIndex: 10, marginBottom: 36, marginLeft: -44, marginRight: -44, padding: "16px 44px", background: "linear-gradient(180deg, rgba(6,13,31,0.98) 80%, transparent)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,169,122,0.08)" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, maxWidth: 900 }}>
         <div>
-          <p style={{ fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 600, letterSpacing: 5, textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>
+          <p style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 5, textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>
             Editando Curso
           </p>
-          <h1 style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 28, letterSpacing: 2, color: "var(--text-primary)", lineHeight: 1.2 }}>
+          <h1 style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 20, letterSpacing: 2, color: "var(--text-primary)", lineHeight: 1.2 }}>
             {course.title}
           </h1>
         </div>
@@ -141,6 +142,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
           </button>
           <Button size="sm" loading={saving} onClick={saveCourse}>Salvar</Button>
         </div>
+      </div>
       </div>
 
       {/* ── Dados do curso ── */}
@@ -345,9 +347,10 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                     </div>
                   </div>
                 ) : (
-                  <button onClick={() => setAddingLesson(mod.id)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "rgba(201,169,122,0.45)", fontFamily: "'Cinzel',serif", letterSpacing: 2, textTransform: "uppercase", padding: "6px 0", transition: "color 0.2s" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = "#C9A97A")} onMouseLeave={e => (e.currentTarget.style.color = "rgba(201,169,122,0.45)")}>
-                    <Plus size={13} /> Adicionar Aula
+                  <button onClick={() => setAddingLesson(mod.id)} style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 10, background: "rgba(201,169,122,0.06)", border: "1px dashed rgba(201,169,122,0.25)", cursor: "pointer", fontSize: 11, color: "rgba(201,169,122,0.6)", fontFamily: "'Cinzel',serif", letterSpacing: 2, textTransform: "uppercase", transition: "all 0.2s", width: "100%" }}
+                    onMouseEnter={e => { e.currentTarget.style.color = "#C9A97A"; e.currentTarget.style.borderColor = "rgba(201,169,122,0.5)"; e.currentTarget.style.background = "rgba(201,169,122,0.10)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = "rgba(201,169,122,0.6)"; e.currentTarget.style.borderColor = "rgba(201,169,122,0.25)"; e.currentTarget.style.background = "rgba(201,169,122,0.06)"; }}>
+                    <Plus size={13} /> Adicionar Nova Aula
                   </button>
                 )}
               </div>
