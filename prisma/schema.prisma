@@ -93,6 +93,7 @@ model Module {
   id          String   @id @default(cuid())
   title       String
   description String?
+  thumbnail   String?
   order       Int      @default(0)
   courseId    String
   createdAt   DateTime @default(now())

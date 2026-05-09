@@ -8,7 +8,7 @@ import { getYoutubeId } from "@/lib/utils";
 import { Plus, Trash2, ChevronDown, ChevronRight, Eye, EyeOff, Pencil, X, Check } from "lucide-react";
 
 type Lesson = { id: string; title: string; youtubeUrl: string; duration: string | null; content: string | null; order: number };
-type Module = { id: string; title: string; order: number; lessons: Lesson[] };
+type Module = { id: string; title: string; thumbnail: string | null; order: number; lessons: Lesson[] };
 type Course = { id: string; title: string; description: string | null; thumbnail: string | null; published: boolean; modules: Module[] };
 
 const textareaClass = "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(201,169,122,0.18)] rounded-xl px-4 py-3 text-sm text-white placeholder-[rgba(255,255,255,0.2)] outline-none resize-none focus:border-[rgba(201,169,122,0.5)] focus:bg-[rgba(255,255,255,0.06)] transition-all";
@@ -20,6 +20,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
   const [saving, setSaving] = useState(false);
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [newModuleTitle, setNewModuleTitle] = useState("");
+  const [newModuleThumbnail, setNewModuleThumbnail] = useState("");
   const [addingModule, setAddingModule] = useState(false);
   const [addingLesson, setAddingLesson] = useState<string | null>(null);
   const [newLesson, setNewLesson] = useState({ title: "", youtubeUrl: "", duration: "", content: "" });
@@ -43,11 +44,12 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
     const res = await fetch(`/api/courses/${course.id}/modules`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: newModuleTitle }),
+      body: JSON.stringify({ title: newModuleTitle, thumbnail: newModuleThumbnail || undefined }),
     });
     const mod = await res.json();
     setCourse(c => ({ ...c, modules: [...c.modules, { ...mod, lessons: [] }] }));
     setNewModuleTitle("");
+    setNewModuleThumbnail("");
     setAddingModule(false);
   }
 
@@ -135,12 +137,17 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
       </div>
 
       {addingModule && (
-        <div className="rounded-xl p-4 mb-4 flex gap-3" style={{ background: "rgba(15,26,61,0.6)", border: "1px solid rgba(201,169,122,0.2)" }}>
+        <div className="rounded-xl p-4 mb-4 flex flex-col gap-3" style={{ background: "rgba(15,26,61,0.6)", border: "1px solid rgba(201,169,122,0.2)" }}>
           <input value={newModuleTitle} onChange={e => setNewModuleTitle(e.target.value)}
-            placeholder="Nome do módulo" onKeyDown={e => e.key === "Enter" && addModule()}
-            className="flex-1 bg-transparent border-b border-[rgba(201,169,122,0.3)] text-sm text-white outline-none pb-1 placeholder-[rgba(255,255,255,0.3)]" />
-          <Button size="sm" onClick={addModule}>Adicionar</Button>
-          <Button size="sm" variant="ghost" onClick={() => setAddingModule(false)}>Cancelar</Button>
+            placeholder="Nome do módulo *" onKeyDown={e => e.key === "Enter" && addModule()}
+            className="w-full bg-transparent border-b border-[rgba(201,169,122,0.3)] text-sm text-white outline-none pb-1 placeholder-[rgba(255,255,255,0.3)]" />
+          <input value={newModuleThumbnail} onChange={e => setNewModuleThumbnail(e.target.value)}
+            placeholder="URL da capa do módulo (800×1000px recomendado)"
+            className="w-full bg-transparent border-b border-[rgba(201,169,122,0.15)] text-sm text-white outline-none pb-1 placeholder-[rgba(255,255,255,0.2)]" />
+          <div className="flex gap-2">
+            <Button size="sm" onClick={addModule}>Adicionar</Button>
+            <Button size="sm" variant="ghost" onClick={() => { setAddingModule(false); setNewModuleThumbnail(""); }}>Cancelar</Button>
+          </div>
         </div>
       )}
 
@@ -151,7 +158,9 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
               {openModules[mod.id]
                 ? <ChevronDown size={14} className="text-[#C9A97A]" />
                 : <ChevronRight size={14} className="text-[rgba(255,255,255,0.4)]" />}
-              <span className="text-xs text-[rgba(201,169,122,0.5)] w-5 font-bold">{mi + 1}.</span>
+              {mod.thumbnail
+                ? <img src={mod.thumbnail} alt="" className="w-8 h-10 object-contain rounded shrink-0" style={{ border: "1px solid rgba(201,169,122,0.15)" }} />
+                : <span className="text-xs text-[rgba(201,169,122,0.5)] w-5 font-bold shrink-0">{mi + 1}.</span>}
               <span className="text-sm font-semibold text-white flex-1">{mod.title}</span>
               <span className="text-xs text-[rgba(255,255,255,0.3)]">{mod.lessons.length} aula(s)</span>
               <button onClick={e => { e.stopPropagation(); deleteModule(mod.id); }}
@@ -162,6 +171,24 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
 
             {openModules[mod.id] && (
               <div style={{ borderTop: "1px solid rgba(201,169,122,0.07)" }} className="px-5 py-4">
+                {/* Thumbnail do módulo */}
+                <div className="flex items-center gap-3 mb-4 pb-4" style={{ borderBottom: "1px solid rgba(201,169,122,0.07)" }}>
+                  <input
+                    defaultValue={mod.thumbnail ?? ""}
+                    placeholder="URL da capa do módulo (800×1000px)"
+                    onBlur={async e => {
+                      const val = e.target.value.trim();
+                      if (val === (mod.thumbnail ?? "")) return;
+                      await fetch(`/api/courses/${course.id}/modules/${mod.id}`, {
+                        method: "PUT", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ thumbnail: val || null }),
+                      });
+                      setCourse(c => ({ ...c, modules: c.modules.map(m => m.id === mod.id ? { ...m, thumbnail: val || null } : m) }));
+                    }}
+                    className="flex-1 bg-transparent border-b border-[rgba(201,169,122,0.2)] text-xs text-white outline-none pb-1 placeholder-[rgba(255,255,255,0.25)]"
+                  />
+                  <span className="text-[10px] text-[rgba(201,169,122,0.5)] shrink-0">Capa do módulo</span>
+                </div>
                 <div className="flex flex-col gap-2 mb-4">
                   {mod.lessons.map((lesson, li) => {
                     const ytId = getYoutubeId(lesson.youtubeUrl);
