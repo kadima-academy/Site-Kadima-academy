@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -71,8 +70,9 @@ export default function LoginPage() {
             display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "0 0 40px rgba(201,169,122,0.20), 0 8px 32px rgba(0,0,0,0.40)",
           }}>
-            <Image src="/logo-nova.png" alt="Kadima Academy" width={60} height={60}
-              style={{ borderRadius: "50%", objectFit: "contain" }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-nova.png" alt="Kadima Academy"
+              style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "contain" }} />
           </div>
 
           <h1 style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, letterSpacing: 8, color: "var(--text-primary)", marginBottom: 6, textAlign: "center", textShadow: "0 2px 20px rgba(201,169,122,0.30)" }}>
