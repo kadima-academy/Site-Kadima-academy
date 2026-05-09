@@ -3,13 +3,35 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, BookOpen, LogOut, Video } from "lucide-react";
 import Image from "next/image";
 
 const links = [
-  { href: "/dashboard", label: "Início", icon: LayoutDashboard, exact: true },
-  { href: "/cursos", label: "Meus Cursos", icon: BookOpen },
-  { href: "/ao-vivo", label: "Ao Vivo", icon: Video },
+  {
+    href: "/dashboard", label: "Início", exact: true,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+      </svg>
+    ),
+  },
+  {
+    href: "/cursos", label: "Meus Cursos",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+        <path d="M8 7h8M8 11h6"/>
+      </svg>
+    ),
+  },
+  {
+    href: "/ao-vivo", label: "Ao Vivo", live: true,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="6" width="14" height="12" rx="2"/>
+        <path d="M22 8l-6 4 6 4V8z"/>
+      </svg>
+    ),
+  },
 ];
 
 export default function StudentSidebar({ user }: { user: { name?: string | null; email?: string | null } }) {
@@ -17,115 +39,73 @@ export default function StudentSidebar({ user }: { user: { name?: string | null;
   const initials = user.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "A";
 
   return (
-    <aside
-      className="w-[240px] flex flex-col shrink-0 h-screen sticky top-0"
-      style={{
-        background: "linear-gradient(180deg, #060D1F 0%, #0A1530 60%, #060D1F 100%)",
-        borderRight: "1px solid rgba(201,169,122,0.12)",
-      }}
-    >
-      {/* Stars overlay */}
-      <div className="absolute inset-0 stars-bg pointer-events-none opacity-60" />
-
-      {/* Gold top border accent */}
-      <div className="absolute top-0 left-0 right-0 h-0.5"
-        style={{ background: "linear-gradient(90deg, transparent, #C9A97A, transparent)" }} />
-
-      {/* Logo area */}
-      <div className="relative flex flex-col items-center pt-8 pb-7 px-6"
-        style={{ borderBottom: "1px solid rgba(201,169,122,0.1)" }}>
-        {/* Glow behind logo */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-36 h-36 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(201,169,122,0.15) 0%, transparent 70%)" }} />
-        <Image
-          src="/logo-nova.png"
-          alt="Kadima Academy"
-          width={80}
-          height={80}
-          className="relative z-10 mb-3"
-          style={{ filter: "drop-shadow(0 0 24px rgba(201,169,122,0.5))" }}
-        />
-        <p
-          className="text-sm font-bold tracking-[4px] uppercase text-white relative z-10"
-          style={{ fontFamily: "var(--font-cinzel)" }}
-        >
-          Kadima
-        </p>
-        <p className="text-[10px] tracking-[3px] uppercase mt-0.5 relative z-10" style={{ color: "#C9A97A" }}>
+    <aside className="ka-sidebar">
+      {/* Logo */}
+      <div style={{ padding: "28px 20px 20px", textAlign: "center" }}>
+        <div className="ka-logo-ring" style={{ color: "var(--navy-darkest)" }}>
+          <Image src="/logo-nova.png" alt="Kadima Academy" width={52} height={52}
+            style={{ borderRadius: "50%", objectFit: "contain" }} />
+        </div>
+        <div style={{ fontFamily: "var(--font-cinzel,'Cinzel',serif)", fontWeight: 700, fontSize: 22, letterSpacing: 4, color: "var(--text-primary)", marginBottom: 2 }}>
+          KADIMA
+        </div>
+        <div style={{ fontFamily: "var(--font-cinzel,'Cinzel',serif)", fontWeight: 500, fontSize: 11, letterSpacing: 6, color: "var(--gold-light)", textTransform: "uppercase" }}>
           Academy
-        </p>
+        </div>
       </div>
 
+      <div className="ka-divider" />
+
       {/* Nav */}
-      <nav className="flex-1 px-4 py-5 flex flex-col gap-2 relative z-10">
-        {links.map(({ href, label, icon: Icon, exact }) => {
+      <nav style={{ flex: 1, padding: "0 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {links.map(({ href, label, icon, exact, live }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200"
-              style={active ? {
-                background: "linear-gradient(135deg, rgba(201,169,122,0.2) 0%, rgba(201,169,122,0.08) 100%)",
-                border: "1px solid rgba(201,169,122,0.3)",
-                color: "#E8D5A8",
-                boxShadow: "0 2px 16px rgba(201,169,122,0.12)",
-              } : {
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                color: "rgba(255,255,255,0.45)",
-              }}
-            >
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={active ? {
-                  background: "rgba(201,169,122,0.2)",
-                  boxShadow: "0 0 12px rgba(201,169,122,0.2)",
-                } : {
-                  background: "rgba(255,255,255,0.05)",
-                }}
-              >
-                <Icon size={15} />
-              </div>
+            <Link key={href} href={href} className={`ka-nav-btn${active ? " active" : ""}`}>
+              <span style={{ color: active ? "var(--gold-bright)" : "var(--gold-light)", opacity: active ? 1 : 0.85, flexShrink: 0 }}>
+                {icon}
+              </span>
               <span>{label}</span>
-              {active && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#C9A97A" }} />
+              {live && (
+                <span className="ka-live-badge">
+                  <span className="ka-live-dot" />
+                  AO VIVO
+                </span>
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Divider */}
-      <div className="mx-4 h-px relative z-10" style={{ background: "linear-gradient(90deg, transparent, rgba(201,169,122,0.12), transparent)" }} />
-
-      {/* User */}
-      <div className="p-4 relative z-10">
-        <div
-          className="flex items-center gap-3 px-3 py-3 rounded-xl"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-        >
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-            style={{ background: "linear-gradient(135deg, #C9A97A, #9A7A50)", color: "#060D1F" }}
-          >
+      {/* Footer */}
+      <div style={{ padding: 16, borderTop: "1px solid rgba(201,169,122,0.10)", background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.30) 100%)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8, borderRadius: 12, background: "rgba(255,255,255,0.02)", marginBottom: 10 }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+            background: "radial-gradient(circle at 30% 30%, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "var(--navy-darkest)", fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 14,
+            boxShadow: "0 0 14px rgba(201,169,122,0.45)", border: "1px solid var(--gold-light)",
+          }}>
             {initials}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white truncate">{user.name}</p>
-            <p className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.3)" }}>{user.email}</p>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {user.name}
+            </div>
+            <div style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {user.email}
+            </div>
           </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            title="Sair"
-            className="shrink-0 p-1.5 rounded-lg transition-all"
-            style={{ color: "rgba(255,255,255,0.2)" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#ef4444"; (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.1)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.2)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
-          >
-            <LogOut size={13} />
-          </button>
         </div>
+        <button className="ka-logout-btn" onClick={() => signOut({ callbackUrl: "/login" })}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sair da conta
+        </button>
       </div>
     </aside>
   );

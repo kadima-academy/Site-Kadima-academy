@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, Play, ChevronRight } from "lucide-react";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -16,9 +15,7 @@ export default async function DashboardPage() {
         include: {
           modules: {
             include: {
-              lessons: {
-                include: { progress: { where: { userId: session.user.id } } },
-              },
+              lessons: { include: { progress: { where: { userId: session.user.id } } } },
             },
           },
         },
@@ -29,95 +26,81 @@ export default async function DashboardPage() {
   const firstName = session.user.name?.split(" ")[0] ?? "Aluno";
 
   return (
-    <div>
-      {/* ── Hero Banner ── */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{
-          minHeight: 260,
-          background: "linear-gradient(140deg, #060D1F 0%, #0F1A3D 45%, #1B2E6B 75%, #060D1F 100%)",
-          borderBottom: "1px solid rgba(201,169,122,0.15)",
-        }}
-      >
+    <div style={{ minHeight: "100vh", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+
+      {/* ── Hero ── */}
+      <section className="ka-hero">
         {/* Bokeh blobs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full"
-            style={{ background: "radial-gradient(ellipse, rgba(201,169,122,0.1) 0%, transparent 65%)" }} />
-          <div className="absolute -top-20 right-0 w-80 h-80 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(27,46,107,0.5) 0%, transparent 70%)" }} />
-          <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(201,169,122,0.06) 0%, transparent 70%)" }} />
-        </div>
+        <div className="ka-bokeh" style={{ top: -30, left: "10%", width: 180, height: 180, background: "rgba(201,169,122,0.25)" }} />
+        <div className="ka-bokeh" style={{ bottom: -50, right: "15%", width: 220, height: 220, background: "rgba(80,110,200,0.18)" }} />
+        <div className="ka-bokeh" style={{ top: "40%", left: "60%", width: 140, height: 140, background: "rgba(232,213,168,0.15)" }} />
 
-        {/* Stars */}
-        <div className="absolute inset-0 stars-bg opacity-70 pointer-events-none" />
-
-        {/* Gold line top */}
-        <div className="absolute top-0 left-0 right-0 h-0.5"
-          style={{ background: "linear-gradient(90deg, transparent 0%, #C9A97A 50%, transparent 100%)" }} />
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-8 py-14">
-          <div className="relative mb-5">
-            <div className="absolute inset-0 rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(201,169,122,0.3) 0%, transparent 65%)", transform: "scale(2.8)" }} />
-            <Image
-              src="/logo-nova.png"
-              alt="Kadima Academy"
-              width={100}
-              height={100}
-              className="relative z-10"
-              style={{ filter: "drop-shadow(0 0 32px rgba(201,169,122,0.6))" }}
-            />
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 20px" }}>
+          {/* Logo */}
+          <div className="ka-hero-logo">
+            <Image src="/logo-nova.png" alt="Kadima Academy" width={68} height={68}
+              style={{ borderRadius: "50%", objectFit: "contain", position: "relative", zIndex: 1 }} />
           </div>
 
-          <h1
-            className="text-4xl font-bold text-white mb-2 tracking-widest"
-            style={{ fontFamily: "var(--font-cinzel)", textShadow: "0 0 40px rgba(201,169,122,0.3)" }}
-          >
+          <h1 style={{
+            fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 36,
+            letterSpacing: 8, color: "var(--text-primary)", marginBottom: 14,
+            textShadow: "0 2px 20px rgba(201,169,122,0.40)",
+          }}>
             KADIMA ACADEMY
           </h1>
 
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-px w-12" style={{ background: "linear-gradient(90deg, transparent, #C9A97A)" }} />
-            <p className="text-xs tracking-[4px] uppercase" style={{ color: "#C9A97A" }}>Sua área de membros</p>
-            <div className="h-px w-12" style={{ background: "linear-gradient(90deg, #C9A97A, transparent)" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 10 }}>
+            <span style={{ width: 60, height: 1, background: "linear-gradient(90deg, transparent, var(--gold) 50%, transparent)" }} />
+            <span style={{ fontFamily: "'Cinzel',serif", fontWeight: 500, fontSize: 11, letterSpacing: 5, color: "var(--gold-light)", textTransform: "uppercase" }}>
+              Sua área de membros
+            </span>
+            <span style={{ width: 60, height: 1, background: "linear-gradient(90deg, var(--gold), transparent 50%, transparent)" }} />
           </div>
 
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
-            Bem-vindo, <span style={{ color: "rgba(255,255,255,0.7)" }}>{firstName}</span>
+          <p style={{ fontFamily: "'Poppins',sans-serif", fontSize: 15, fontWeight: 300, color: "var(--text-secondary)", letterSpacing: 1 }}>
+            Bem-vindo, <strong style={{ fontWeight: 600, color: "var(--gold-light)" }}>{firstName}</strong>
           </p>
         </div>
-      </div>
+      </section>
 
       {/* ── Courses ── */}
-      <div className="px-8 py-8">
-        <div className="flex items-center gap-2 mb-6">
-          <BookOpen size={14} style={{ color: "#C9A97A" }} />
-          <h2 className="text-sm font-semibold text-white tracking-wide">Meus Cursos</h2>
-          {enrollments.length > 0 && (
-            <span
-              className="text-[10px] px-2 py-0.5 rounded-full font-bold ml-1"
-              style={{ background: "rgba(201,169,122,0.1)", color: "#C9A97A", border: "1px solid rgba(201,169,122,0.2)" }}
-            >
-              {enrollments.length}
-            </span>
-          )}
+      <section style={{ position: "relative", zIndex: 1, padding: "38px 44px 44px" }}>
+        {/* Section header */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: 12,
+            background: "linear-gradient(135deg, rgba(201,169,122,0.20), rgba(201,169,122,0.05))",
+            border: "1px solid var(--gold-35)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "var(--gold-light)",
+            boxShadow: "0 0 14px rgba(201,169,122,0.18)",
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+              <path d="M8 7h8M8 11h6"/>
+            </svg>
+          </div>
+          <h2 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 22, letterSpacing: 3, color: "var(--text-primary)", textTransform: "uppercase" }}>
+            Meus <span style={{ color: "var(--gold-light)" }}>Cursos</span>
+          </h2>
         </div>
 
         {enrollments.length === 0 ? (
-          <div
-            className="rounded-2xl p-14 text-center max-w-sm"
-            style={{ background: "rgba(15,26,61,0.5)", border: "1px solid rgba(201,169,122,0.1)" }}
-          >
-            <BookOpen size={28} className="mx-auto mb-3" style={{ color: "rgba(201,169,122,0.2)" }} />
-            <p className="text-sm font-medium text-white mb-1">Nenhum curso ainda</p>
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
-              Entre em contato com a administração para se matricular.
-            </p>
+          <div style={{
+            borderRadius: 20, padding: "56px 32px", textAlign: "center", maxWidth: 380,
+            background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+            border: "1px solid rgba(201,169,122,0.12)",
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: "rgba(201,169,122,0.25)", margin: "0 auto 16px", display: "block" }}>
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+            </svg>
+            <p style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>Nenhum curso ainda</p>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>Entre em contato com a administração para se matricular.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
             {enrollments.map(({ course }) => {
               const allLessons = course.modules.flatMap(m => m.lessons);
               const done = allLessons.filter(l => l.progress[0]?.completed).length;
@@ -127,105 +110,68 @@ export default async function DashboardPage() {
               const thumbnailUrl = course.thumbnail?.includes("drive.google.com")
                 ? getGoogleDriveImageUrl(course.thumbnail)
                 : course.thumbnail;
+              const label = pct > 0 && pct < 100 ? "Continuar" : pct === 100 ? "Rever" : "Começar";
 
               return (
-                <div
-                  key={course.id}
-                  className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1"
-                  style={{
-                    background: "linear-gradient(160deg, rgba(15,26,61,0.8) 0%, rgba(8,16,40,0.9) 100%)",
-                    border: "1px solid rgba(201,169,122,0.14)",
-                    boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-                  }}
-                >
+                <article key={course.id} className="ka-card">
                   {/* Thumbnail */}
-                  <div className="h-44 relative overflow-hidden"
-                    style={{ background: "linear-gradient(135deg, #0A1228 0%, #1B2E6B 100%)" }}>
-                    {thumbnailUrl ? (
-                      <img
-                        src={thumbnailUrl}
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen size={40} style={{ color: "rgba(201,169,122,0.1)" }} />
-                      </div>
+                  <div className="ka-thumb">
+                    {thumbnailUrl && (
+                      <img src={thumbnailUrl} alt={course.title} className="ka-thumb-img"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
                     )}
-                    <div className="absolute inset-0"
-                      style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(8,16,40,0.95) 100%)" }} />
+                    {/* Placeholder icon (hidden when image loads) */}
+                    <div className="ka-thumb-mark">
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 6.5C2 5.67 2.67 5 3.5 5H8c1.66 0 3 1.34 3 3v12c0-1.1-.9-2-2-2H3.5c-.83 0-1.5-.67-1.5-1.5v-10z"/>
+                        <path d="M22 6.5C22 5.67 21.33 5 20.5 5H16c-1.66 0-3 1.34-3 3v12c0-1.1.9-2 2-2h5.5c.83 0 1.5-.67 1.5-1.5v-10z"/>
+                      </svg>
+                    </div>
 
-                    {pct === 100 && (
-                      <div className="absolute top-3 right-3 text-[9px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: "rgba(34,197,94,0.2)", color: "#86efac", border: "1px solid rgba(34,197,94,0.3)" }}>
-                        ✓ Concluído
-                      </div>
-                    )}
+                    <div className="ka-progress-badge">{pct}%</div>
 
                     {nextLesson && (
-                      <Link
-                        href={`/cursos/${course.slug}/aula/${nextLesson.id}`}
-                        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
-                        style={{ background: "rgba(0,0,0,0.3)" }}
-                      >
-                        <div
-                          className="w-14 h-14 rounded-full flex items-center justify-center"
-                          style={{
-                            background: "linear-gradient(135deg, #C9A97A, #9A7A50)",
-                            boxShadow: "0 0 32px rgba(201,169,122,0.5)",
-                          }}
-                        >
-                          <Play size={18} fill="#060D1F" color="#060D1F" className="ml-1" />
+                      <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-play-overlay">
+                        <div className="ka-play-circle">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
                         </div>
                       </Link>
                     )}
                   </div>
 
-                  <div className="p-5">
-                    <h3 className="text-sm font-semibold text-white mb-1 leading-snug">{course.title}</h3>
-                    <p className="text-[11px] mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  {/* Body */}
+                  <div style={{ padding: "20px 22px 22px" }}>
+                    <h3 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 16, letterSpacing: 1.5, color: "var(--text-primary)", marginBottom: 6, lineHeight: 1.3 }}>
+                      {course.title}
+                    </h3>
+                    <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold)", boxShadow: "0 0 4px var(--gold)", flexShrink: 0 }} />
                       {done}/{total} aula{total !== 1 ? "s" : ""} concluída{done !== 1 ? "s" : ""}
-                    </p>
-
-                    {/* Progress bar */}
-                    <div className="h-1 rounded-full mb-4 overflow-hidden"
-                      style={{ background: "rgba(255,255,255,0.06)" }}>
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${pct}%`,
-                          background: pct === 100
-                            ? "linear-gradient(90deg,#22c55e,#86efac)"
-                            : "linear-gradient(90deg,#C9A97A,#E8D5A8)",
-                        }}
-                      />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold" style={{ color: "#C9A97A" }}>{pct}%</span>
-                      {nextLesson && (
-                        <Link
-                          href={`/cursos/${course.slug}/aula/${nextLesson.id}`}
-                          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all"
-                          style={{
-                            background: "rgba(201,169,122,0.1)",
-                            border: "1px solid rgba(201,169,122,0.2)",
-                            color: "#C9A97A",
-                          }}
-                        >
-                          {pct > 0 && pct < 100 ? "Continuar" : pct === 100 ? "Rever" : "Começar"}
-                          <ChevronRight size={12} />
-                        </Link>
-                      )}
+                    <div className="ka-progress-bar" style={{ marginBottom: 16 }}>
+                      <div className="ka-progress-fill" style={{ width: `${pct}%` }} />
                     </div>
+
+                    {nextLesson ? (
+                      <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-continue-btn">
+                        {label}
+                        <span style={{ transition: "transform 0.2s" }}>→</span>
+                      </Link>
+                    ) : (
+                      <Link href={`/cursos/${course.slug}`} className="ka-continue-btn">
+                        Ver Curso →
+                      </Link>
+                    )}
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

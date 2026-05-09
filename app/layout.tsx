@@ -11,7 +11,7 @@ const poppins = Poppins({
 
 const cinzel = Cinzel({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "900"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-cinzel",
   display: "swap",
 });
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`h-full ${poppins.variable} ${cinzel.variable}`}>
-      <body className="h-full" style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
+      <body className="h-full" style={{ fontFamily: "var(--font-poppins,'Poppins',sans-serif)" }}>
         {children}
       </body>
     </html>
