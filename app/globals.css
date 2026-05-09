@@ -504,13 +504,38 @@ body {
 }
 
 /* ── Prose ── */
+/* Strip inline backgrounds from pasted HTML (Word, Google Docs, etc.) */
+.prose-lesson * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 .prose-lesson h1, .prose-lesson h2, .prose-lesson h3 { color: #fff; font-weight: 600; margin-top: 1.5em; margin-bottom: 0.5em; }
-.prose-lesson p { margin-bottom: 1em; color: rgba(255,255,255,0.75); }
+.prose-lesson p { margin-bottom: 1em; color: rgba(255,255,255,0.80); }
 .prose-lesson ul, .prose-lesson ol { padding-left: 1.5em; margin-bottom: 1em; color: rgba(255,255,255,0.75); }
 .prose-lesson li { margin-bottom: 0.3em; }
-.prose-lesson strong { color: #C9A97A; }
-.prose-lesson a { color: #C9A97A; text-decoration: underline; }
+.prose-lesson strong { color: #C9A97A !important; }
+.prose-lesson a { color: #C9A97A !important; text-decoration: underline; }
 .prose-lesson blockquote { border-left: 3px solid rgba(201,169,122,0.4); padding-left: 1em; color: rgba(255,255,255,0.5); margin: 1em 0; }
+/* Override dark inline text colors from pasted content */
+.prose-lesson span, .prose-lesson div, .prose-lesson td, .prose-lesson th {
+  color: inherit;
+}
+.prose-lesson table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+.prose-lesson td, .prose-lesson th {
+  padding: 8px 12px;
+  border: 1px solid rgba(201,169,122,0.15);
+  color: rgba(255,255,255,0.78);
+  font-size: 13px;
+}
+.prose-lesson th {
+  color: var(--gold-light);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(201,169,122,0.30);
+}
 
 /* ═══════════════════════════════════════
    MOBILE BOTTOM NAV
