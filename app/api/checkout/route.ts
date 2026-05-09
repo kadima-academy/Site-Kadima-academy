@@ -14,11 +14,15 @@ export async function POST(req: NextRequest) {
   if (!course || !course.published) return NextResponse.json({ error: "Curso não encontrado" }, { status: 404 });
   if (!course.price || course.price <= 0) return NextResponse.json({ error: "Curso sem preço definido" }, { status: 400 });
 
-  // Verifica se já tem matrícula
-  const alreadyEnrolled = await prisma.enrollment.findUnique({
+  // Verifica matrícula existente
+  const existing = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId } },
   });
-  if (alreadyEnrolled) return NextResponse.json({ error: "Já matriculado" }, { status: 400 });
+  // Bloqueia se já matriculado e acesso ainda válido
+  if (existing) {
+    const isActive = !existing.expiresAt || existing.expiresAt > new Date();
+    if (isActive) return NextResponse.json({ error: "Já matriculado" }, { status: 400 });
+  }
 
   const baseUrl = process.env.AUTH_URL ?? "http://localhost:3000";
 

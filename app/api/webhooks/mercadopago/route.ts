@@ -72,10 +72,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (status === "approved") {
+      const course = await prisma.course.findUnique({ where: { id: courseId }, select: { paymentType: true } });
+      const expiresAt = course?.paymentType === "MONTHLY"
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        : null;
+
       await prisma.enrollment.upsert({
         where: { userId_courseId: { userId, courseId } },
-        create: { userId, courseId },
-        update: {},
+        create: { userId, courseId, expiresAt },
+        update: { expiresAt },
       });
     }
 

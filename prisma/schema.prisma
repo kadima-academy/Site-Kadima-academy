@@ -15,6 +15,11 @@ enum Role {
   STUDENT
 }
 
+enum PaymentType {
+  ONE_TIME
+  MONTHLY
+}
+
 // ── NEXTAUTH ──────────────────────────────────────────────────
 
 model Account {
@@ -81,9 +86,10 @@ model Course {
   slug        String   @unique
   description String?
   thumbnail   String?
-  published   Boolean  @default(false)
+  published   Boolean     @default(false)
   price       Float?
-  order       Int      @default(0)
+  paymentType PaymentType @default(ONE_TIME)
+  order       Int         @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -123,10 +129,11 @@ model Lesson {
 }
 
 model Enrollment {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
   courseId  String
-  createdAt DateTime @default(now())
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)

@@ -13,22 +13,24 @@ interface Course {
   _count: { modules: number; enrollments: number };
 }
 
-export default function CheckoutPage({ params }: { params: Promise<{ courseId: string }> }) {
+export default function CheckoutPage({ params, searchParams }: { params: Promise<{ courseId: string }>; searchParams: Promise<{ renovar?: string }> }) {
   const router = useRouter();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [courseId, setCourseId] = useState("");
+  const [isRenewal, setIsRenewal] = useState(false);
 
   useEffect(() => {
-    params.then(p => {
+    Promise.all([params, searchParams]).then(([p, sp]) => {
       setCourseId(p.courseId);
+      setIsRenewal(sp.renovar === "1");
       fetch(`/api/courses/${p.courseId}/public`)
         .then(r => r.json())
         .then(setCourse)
         .catch(() => setError("Curso não encontrado."));
     });
-  }, [params]);
+  }, [params, searchParams]);
 
   async function handleCheckout() {
     setLoading(true);
@@ -92,7 +94,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ courseId: s
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
                 <div style={{ width: 3, height: 16, background: "linear-gradient(180deg, var(--gold-light), var(--gold))", borderRadius: 2, boxShadow: "0 0 8px var(--gold)" }} />
                 <span style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 4, textTransform: "uppercase", color: "var(--gold)" }}>
-                  Resumo da Compra
+                  {isRenewal ? "Renovar Acesso" : "Resumo da Compra"}
                 </span>
               </div>
 
@@ -122,7 +124,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ courseId: s
                 display: "flex", alignItems: "center", justifyContent: "space-between",
               }}>
                 <span style={{ fontFamily: "'Cinzel',serif", fontSize: 11, letterSpacing: 2, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                  Valor do curso
+                  {isRenewal ? "Mensalidade (30 dias)" : "Valor do curso"}
                 </span>
                 <span style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 26, color: "var(--gold-light)" }}>
                   R$ {course.price.toFixed(2).replace(".", ",")}
@@ -172,7 +174,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ courseId: s
 
               <p style={{ fontSize: 10, color: "var(--text-muted)", textAlign: "center", marginTop: 12, fontFamily: "'Poppins',sans-serif", lineHeight: 1.6 }}>
                 Você será redirecionado para o Mercado Pago.<br />
-                Pagamento 100% seguro. Acesso liberado imediatamente após confirmação.
+                {isRenewal ? "Acesso renovado por 30 dias após confirmação." : "Pagamento 100% seguro. Acesso liberado imediatamente após confirmação."}
               </p>
             </div>
           </div>

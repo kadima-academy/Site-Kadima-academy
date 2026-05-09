@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getYoutubeId } from "@/lib/utils";
 import Link from "next/link";
 import ProgressButton from "@/components/student/progress-button";
@@ -25,6 +25,13 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
     },
   });
   if (!course) notFound();
+
+  // Verifica matrícula e expiração
+  const enrollment = await prisma.enrollment.findUnique({
+    where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
+  });
+  if (!enrollment) redirect("/dashboard");
+  if (enrollment.expiresAt && enrollment.expiresAt < new Date()) redirect(`/checkout/${course.id}?renovar=1`);
 
   const allLessons = course.modules.flatMap(m => m.lessons);
   const currentIndex = allLessons.findIndex(l => l.id === lessonId);

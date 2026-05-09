@@ -8,6 +8,7 @@ const updateSchema = z.object({
   description: z.string().optional(),
   thumbnail: z.string().optional(),
   price: z.number().positive().nullable().optional(),
+  paymentType: z.enum(["ONE_TIME", "MONTHLY"]).optional(),
   published: z.boolean().optional(),
 });
 

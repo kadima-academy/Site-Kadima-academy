@@ -23,6 +23,7 @@ export default async function DashboardPage() {
           },
         },
       },
+      orderBy: { createdAt: "asc" },
     }),
     prisma.course.findMany({
       where: {
@@ -100,7 +101,12 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 280px))", gap: 24 }}>
-            {enrollments.map(({ course }) => {
+            {enrollments.map(({ course, expiresAt }) => {
+              const isExpired = !!expiresAt && expiresAt < new Date();
+              const daysLeft = expiresAt && !isExpired
+                ? Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)
+                : null;
+
               const allLessons = course.modules.flatMap(m => m.lessons);
               const done = allLessons.filter(l => l.progress[0]?.completed).length;
               const total = allLessons.length;
@@ -112,7 +118,7 @@ export default async function DashboardPage() {
               const label = pct > 0 && pct < 100 ? "Continuar" : pct === 100 ? "Rever" : "Começar";
 
               return (
-                <article key={course.id} className="ka-card">
+                <article key={course.id} className="ka-card" style={isExpired ? { opacity: 0.7 } : undefined}>
                   <div className="ka-thumb">
                     {thumbnailUrl && <CourseThumbnail src={thumbnailUrl} alt={course.title} />}
                     <div className="ka-thumb-mark">
@@ -121,8 +127,13 @@ export default async function DashboardPage() {
                         <path d="M22 6.5C22 5.67 21.33 5 20.5 5H16c-1.66 0-3 1.34-3 3v12c0-1.1.9-2 2-2h5.5c.83 0 1.5-.67 1.5-1.5v-10z"/>
                       </svg>
                     </div>
-                    <div className="ka-progress-badge">{pct}%</div>
-                    {nextLesson && (
+                    {!isExpired && <div className="ka-progress-badge">{pct}%</div>}
+                    {isExpired && (
+                      <div style={{ position: "absolute", top: 10, right: 10, background: "rgba(230,57,70,0.85)", backdropFilter: "blur(4px)", borderRadius: 8, padding: "3px 10px", fontSize: 10, fontWeight: 700, color: "#fff", letterSpacing: 1, textTransform: "uppercase" }}>
+                        Expirado
+                      </div>
+                    )}
+                    {!isExpired && nextLesson && (
                       <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-play-overlay">
                         <div className="ka-play-circle">
                           <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -135,13 +146,30 @@ export default async function DashboardPage() {
                       {course.title}
                     </h3>
                     <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold)", boxShadow: "0 0 4px var(--gold)", flexShrink: 0 }} />
-                      {done}/{total} aula{total !== 1 ? "s" : ""} concluída{done !== 1 ? "s" : ""}
+                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: isExpired ? "#e63946" : "var(--gold)", boxShadow: `0 0 4px ${isExpired ? "#e63946" : "var(--gold)"}`, flexShrink: 0 }} />
+                      {isExpired
+                        ? "Acesso expirado — renove para continuar"
+                        : daysLeft !== null
+                          ? `${daysLeft} dia${daysLeft !== 1 ? "s" : ""} restante${daysLeft !== 1 ? "s" : ""}`
+                          : `${done}/${total} aula${total !== 1 ? "s" : ""} concluída${done !== 1 ? "s" : ""}`}
                     </div>
-                    <div className="ka-progress-bar" style={{ marginBottom: 16 }}>
-                      <div className="ka-progress-fill" style={{ width: `${pct}%` }} />
-                    </div>
-                    {nextLesson ? (
+                    {!isExpired && (
+                      <div className="ka-progress-bar" style={{ marginBottom: 16 }}>
+                        <div className="ka-progress-fill" style={{ width: `${pct}%` }} />
+                      </div>
+                    )}
+                    {isExpired ? (
+                      <Link href={`/checkout/${course.id}`} style={{
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8, textDecoration: "none",
+                        padding: "11px 16px", borderRadius: 12, width: "100%",
+                        background: "linear-gradient(135deg, #e63946, #c1121f)",
+                        color: "#fff", fontFamily: "'Cinzel',serif",
+                        fontWeight: 700, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase",
+                        boxShadow: "0 4px 16px rgba(230,57,70,0.30)",
+                      }}>
+                        Renovar Acesso
+                      </Link>
+                    ) : nextLesson ? (
                       <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-continue-btn">
                         {label} <span>→</span>
                       </Link>
