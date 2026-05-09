@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, BookOpen, Layers, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import DeleteCourseButton from "@/components/admin/delete-course-button";
 
 export default async function CursosPage() {
@@ -14,107 +12,126 @@ export default async function CursosPage() {
   });
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="flex items-start justify-between mb-10">
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+
+      {/* Header */}
+      <div className="ka-page-header" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Gestão</p>
-          <h1 className="text-4xl font-bold text-white tracking-tight">Cursos</h1>
-          <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">{courses.length} curso(s) cadastrado(s)</p>
+          <div className="ka-page-eyebrow">Gestão</div>
+          <h1 className="ka-page-title">Meus <span>Cursos</span></h1>
+          <p className="ka-page-subtitle">{courses.length} curso{courses.length !== 1 ? "s" : ""} cadastrado{courses.length !== 1 ? "s" : ""}</p>
         </div>
-        <Link href="/admin/cursos/novo">
-          <Button size="sm" className="gap-1.5">
-            <Plus size={14} strokeWidth={2.5} />
-            Novo Curso
-          </Button>
+        <Link href="/admin/cursos/novo" style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          padding: "10px 20px", borderRadius: 12,
+          background: "linear-gradient(135deg, var(--gold), var(--gold-deep))",
+          color: "var(--navy-darkest)", fontFamily: "'Cinzel',serif",
+          fontWeight: 700, fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
+          textDecoration: "none", boxShadow: "0 4px 16px rgba(201,169,122,0.35)",
+          transition: "all 0.2s",
+        }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Novo Curso
         </Link>
       </div>
 
-      {courses.length === 0 ? (
-        <div className="rounded-2xl p-16 text-center" style={{
-          background: "rgba(15,26,61,0.3)",
-          border: "1px solid rgba(201,169,122,0.1)",
-        }}>
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: "rgba(201,169,122,0.08)", border: "1px solid rgba(201,169,122,0.12)" }}>
-            <BookOpen size={28} className="text-[rgba(201,169,122,0.4)]" />
+      <div style={{ padding: "32px 44px 44px" }}>
+        {courses.length === 0 ? (
+          <div style={{
+            borderRadius: 20, padding: "56px 32px", textAlign: "center", maxWidth: 380,
+            background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+            border: "1px solid rgba(201,169,122,0.12)",
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: "rgba(201,169,122,0.25)", margin: "0 auto 16px", display: "block" }}>
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+            </svg>
+            <p style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>Nenhum curso cadastrado</p>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 20, lineHeight: 1.6 }}>Crie o primeiro curso da plataforma</p>
+            <Link href="/admin/cursos/novo" style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "9px 18px", borderRadius: 10,
+              background: "rgba(201,169,122,0.12)", border: "1px solid var(--gold-35)",
+              color: "var(--gold-light)", fontSize: 12, fontWeight: 600, textDecoration: "none",
+            }}>
+              + Criar primeiro curso
+            </Link>
           </div>
-          <p className="text-[rgba(255,255,255,0.5)] text-sm mb-1">Nenhum curso cadastrado</p>
-          <p className="text-[rgba(255,255,255,0.25)] text-xs mb-6">Crie o primeiro curso da plataforma</p>
-          <Link href="/admin/cursos/novo">
-            <Button size="sm" variant="ghost">Criar primeiro curso</Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {courses.map(course => {
-            const totalLessons = course.modules.reduce((a, m) => a + m._count.lessons, 0);
-            return (
-              <div key={course.id}
-                className="rounded-2xl p-5 flex items-center gap-5 group transition-all duration-200 hover:-translate-y-0.5"
-                style={{
-                  background: "linear-gradient(135deg, rgba(15,26,61,0.7) 0%, rgba(10,18,45,0.8) 100%)",
-                  border: "1px solid rgba(201,169,122,0.1)",
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
-                }}>
-
-                {/* Thumbnail */}
-                <div className="w-20 h-16 rounded-xl overflow-hidden shrink-0 relative"
-                  style={{ background: "linear-gradient(135deg, rgba(27,46,107,0.6), rgba(15,26,61,0.8))" }}>
-                  {course.thumbnail
-                    ? <img src={course.thumbnail} alt="" className="w-full h-full object-cover" />
-                    : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <BookOpen size={20} className="text-[rgba(201,169,122,0.3)]" />
-                      </div>
-                    )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, transparent 60%, rgba(0,0,0,0.3))" }} />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <h2 className="text-sm font-semibold text-white truncate">{course.title}</h2>
-                    <span className={`text-[9px] tracking-[2px] uppercase px-2 py-0.5 rounded-full font-semibold shrink-0 ${
-                      course.published
-                        ? "text-emerald-300 bg-emerald-500/10 border border-emerald-500/20"
-                        : "text-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)]"
-                    }`}>
-                      {course.published ? "Publicado" : "Rascunho"}
-                    </span>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {courses.map(course => {
+              const totalLessons = course.modules.reduce((a, m) => a + m._count.lessons, 0);
+              return (
+                <div key={course.id} style={{
+                  borderRadius: 16, overflow: "hidden",
+                  background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+                  border: "1px solid rgba(201,169,122,0.10)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.30)",
+                  display: "flex", alignItems: "center", gap: 18, padding: "16px 20px",
+                  transition: "all 0.3s",
+                }}
+                className="admin-row-hover">
+                  {/* Thumbnail */}
+                  <div style={{
+                    width: 60, height: 74, borderRadius: 10, flexShrink: 0, overflow: "hidden",
+                    background: "linear-gradient(140deg, #0A1129, #14215A)",
+                    border: "1px solid rgba(201,169,122,0.10)",
+                    display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
+                  }}>
+                    {course.thumbnail
+                      ? <img src={course.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", position: "absolute", inset: 0 }} />
+                      : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "rgba(201,169,122,0.20)" }}>
+                          <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+                        </svg>}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.35)]">
-                      <Layers size={11} />
-                      {course.modules.length} módulo(s)
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.35)]">
-                      <BookOpen size={11} />
-                      {totalLessons} aula(s)
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.35)]">
-                      <Users size={11} />
-                      {course._count.enrollments} aluno(s)
-                    </span>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                      <h2 style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", fontFamily: "'Cinzel',serif", letterSpacing: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {course.title}
+                      </h2>
+                      <span style={{
+                        fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase",
+                        padding: "2px 8px", borderRadius: 999, flexShrink: 0,
+                        background: course.published ? "rgba(52,211,153,0.12)" : "rgba(255,255,255,0.05)",
+                        border: `1px solid ${course.published ? "rgba(52,211,153,0.25)" : "rgba(255,255,255,0.08)"}`,
+                        color: course.published ? "#6ee7b7" : "rgba(255,255,255,0.30)",
+                      }}>
+                        {course.published ? "Publicado" : "Rascunho"}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      {[
+                        { icon: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4-4V5c0-1.1-.9-2-2-2zM12 17v-6m0 0V7m0 4h4m-4 0H8", label: `${course.modules.length} módulos` },
+                        { icon: "M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20", label: `${totalLessons} aulas` },
+                        { icon: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z", label: `${course._count.enrollments} alunos` },
+                      ].map(({ label }) => (
+                        <span key={label} style={{ fontSize: 11, color: "var(--text-muted)" }}>{label}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <Link href={`/admin/cursos/${course.id}`} style={{
+                      padding: "7px 16px", borderRadius: 10,
+                      background: "rgba(201,169,122,0.10)", border: "1px solid var(--gold-20)",
+                      color: "var(--gold-light)", fontSize: 12, fontWeight: 600,
+                      letterSpacing: 1, textDecoration: "none", transition: "all 0.2s",
+                    }}>
+                      Editar
+                    </Link>
+                    <DeleteCourseButton id={course.id} title={course.title} />
                   </div>
                 </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link href={`/admin/cursos/${course.id}`}>
-                    <Button variant="ghost" size="sm">Editar</Button>
-                  </Link>
-                  <DeleteCourseButton id={course.id} title={course.title} />
-                </div>
-                <div className="flex items-center gap-2 shrink-0 group-hover:hidden">
-                  <Link href={`/admin/cursos/${course.id}`}>
-                    <Button variant="ghost" size="sm">Editar</Button>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

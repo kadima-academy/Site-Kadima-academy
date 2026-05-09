@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import CourseEditor from "@/components/admin/course-editor";
 
@@ -19,11 +18,16 @@ export default async function EditCursoPage({ params }: { params: Promise<{ cour
   if (!course) notFound();
 
   return (
-    <div className="p-8">
-      <Link href="/admin/cursos" className="inline-flex items-center gap-2 text-xs text-[rgba(255,255,255,0.35)] hover:text-[#C9A97A] mb-8 tracking-wide transition-colors">
-        <ArrowLeft size={13} /> Cursos
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+      <Link href="/admin/cursos" className="ka-back-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Cursos
       </Link>
-      <CourseEditor course={course} />
+      <div style={{ padding: "16px 44px 44px" }}>
+        <CourseEditor course={course} />
+      </div>
     </div>
   );
 }

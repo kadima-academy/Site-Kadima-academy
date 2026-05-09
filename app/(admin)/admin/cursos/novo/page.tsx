@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 
 export default function NovoCursoPage() {
   const router = useRouter();
@@ -30,36 +29,56 @@ export default function NovoCursoPage() {
   }
 
   return (
-    <div className="p-8 max-w-2xl">
-      <Link href="/admin/cursos" className="inline-flex items-center gap-2 text-xs text-[rgba(255,255,255,0.35)] hover:text-[#C9A97A] mb-8 tracking-wide transition-colors">
-        <ArrowLeft size={13} /> Voltar
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+      <Link href="/admin/cursos" className="ka-back-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Cursos
       </Link>
-      <p className="text-xs tracking-[3px] uppercase text-[#C9A97A] mb-1">Novo</p>
-      <h1 className="text-2xl font-semibold text-white tracking-wide mb-8">Criar Curso</h1>
 
-      <div className="rounded-2xl border border-[rgba(201,169,122,0.12)] p-8"
-        style={{ background: "rgba(15,26,61,0.5)" }}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <Input id="title" label="Título do curso *" placeholder="Ex: Teologia Sistemática" value={form.title}
-            onChange={e => set("title", e.target.value)} required />
+      <div style={{ padding: "20px 44px 44px", maxWidth: 600 }}>
+        <div className="ka-page-eyebrow" style={{ marginBottom: 6 }}>Novo</div>
+        <h1 className="ka-page-title" style={{ fontSize: 24, marginBottom: 28 }}>
+          Criar <span>Curso</span>
+        </h1>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs tracking-widest uppercase text-[rgba(255,255,255,0.5)]">Descrição</label>
-            <textarea value={form.description} onChange={e => set("description", e.target.value)}
-              placeholder="Descrição do curso..."
-              className="w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(201,169,122,0.2)] rounded-lg px-4 py-3 text-sm text-white placeholder-[rgba(255,255,255,0.25)] outline-none resize-none h-24 focus:border-[rgba(201,169,122,0.55)] transition-all" />
-          </div>
+        <div style={{
+          borderRadius: 20, padding: "32px",
+          background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+          border: "1px solid rgba(201,169,122,0.14)",
+          boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
+        }}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <Input id="title" label="Título do curso *" placeholder="Ex: Teologia Sistemática" value={form.title}
+              onChange={e => set("title", e.target.value)} required />
 
-          <Input id="thumbnail" label="URL da Imagem de Capa" placeholder="https://..." value={form.thumbnail}
-            onChange={e => set("thumbnail", e.target.value)} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "var(--gold)" }}>
+                Descrição
+              </label>
+              <textarea value={form.description} onChange={e => set("description", e.target.value)}
+                placeholder="Descrição do curso..."
+                style={{
+                  width: "100%", background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(201,169,122,0.20)", borderRadius: 10,
+                  padding: "12px 14px", fontSize: 13, color: "var(--text-primary)",
+                  outline: "none", resize: "none", height: 96,
+                  fontFamily: "'Poppins',sans-serif",
+                }} />
+            </div>
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
+            <Input id="thumbnail" label="URL da Capa (800×1000px recomendado)" placeholder="https://..." value={form.thumbnail}
+              onChange={e => set("thumbnail", e.target.value)} />
 
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" loading={loading}>Criar Curso</Button>
-            <Link href="/admin/cursos"><Button type="button" variant="ghost">Cancelar</Button></Link>
-          </div>
-        </form>
+            {error && <p style={{ fontSize: 12, color: "#f87171" }}>{error}</p>}
+
+            <div style={{ display: "flex", gap: 10, paddingTop: 4 }}>
+              <Button type="submit" loading={loading}>Criar Curso</Button>
+              <Link href="/admin/cursos"><Button type="button" variant="ghost">Cancelar</Button></Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

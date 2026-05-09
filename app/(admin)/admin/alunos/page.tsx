@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default async function AlunosPage() {
   const students = await prisma.user.findMany({
@@ -11,94 +9,126 @@ export default async function AlunosPage() {
   });
 
   return (
-    <div className="p-8 max-w-5xl">
-      <div className="flex items-start justify-between mb-10">
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+
+      {/* Header */}
+      <div className="ka-page-header" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Gestão</p>
-          <h1 className="text-4xl font-bold text-white tracking-tight">Alunos</h1>
-          <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">{students.length} aluno(s) cadastrado(s)</p>
+          <div className="ka-page-eyebrow">Gestão</div>
+          <h1 className="ka-page-title">Meus <span>Alunos</span></h1>
+          <p className="ka-page-subtitle">{students.length} aluno{students.length !== 1 ? "s" : ""} cadastrado{students.length !== 1 ? "s" : ""}</p>
         </div>
-        <Link href="/admin/alunos/novo">
-          <Button size="sm" className="gap-1.5">
-            <Plus size={14} strokeWidth={2.5} />
-            Cadastrar Aluno
-          </Button>
+        <Link href="/admin/alunos/novo" style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          padding: "10px 20px", borderRadius: 12,
+          background: "linear-gradient(135deg, var(--gold), var(--gold-deep))",
+          color: "var(--navy-darkest)", fontFamily: "'Cinzel',serif",
+          fontWeight: 700, fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
+          textDecoration: "none", boxShadow: "0 4px 16px rgba(201,169,122,0.35)",
+        }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Cadastrar Aluno
         </Link>
       </div>
 
-      {students.length === 0 ? (
-        <div className="rounded-2xl p-16 text-center" style={{
-          background: "rgba(15,26,61,0.3)",
-          border: "1px solid rgba(201,169,122,0.1)",
-        }}>
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: "rgba(201,169,122,0.08)", border: "1px solid rgba(201,169,122,0.12)" }}>
-            <Users size={28} className="text-[rgba(201,169,122,0.4)]" />
+      <div style={{ padding: "32px 44px 44px" }}>
+        {students.length === 0 ? (
+          <div style={{
+            borderRadius: 20, padding: "56px 32px", textAlign: "center", maxWidth: 380,
+            background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+            border: "1px solid rgba(201,169,122,0.12)",
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: "rgba(201,169,122,0.25)", margin: "0 auto 16px", display: "block" }}>
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            </svg>
+            <p style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>Nenhum aluno cadastrado</p>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>Cadastre o primeiro aluno da plataforma</p>
           </div>
-          <p className="text-[rgba(255,255,255,0.5)] text-sm mb-1">Nenhum aluno cadastrado</p>
-          <p className="text-[rgba(255,255,255,0.25)] text-xs">Cadastre o primeiro aluno da plataforma</p>
-        </div>
-      ) : (
-        <div className="rounded-2xl overflow-hidden" style={{
-          background: "rgba(10,18,45,0.6)",
-          border: "1px solid rgba(201,169,122,0.1)",
-        }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid rgba(201,169,122,0.08)", background: "rgba(201,169,122,0.03)" }}>
-                {["Aluno", "E-mail", "Igreja", "Cursos", "Cadastro", ""].map(h => (
-                  <th key={h} className="text-left px-5 py-3.5 text-[10px] tracking-[2px] uppercase text-[rgba(255,255,255,0.3)] font-semibold">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((s, i) => {
-                const initials = s.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "?";
-                return (
-                  <tr key={s.id}
-                    className="hover:bg-[rgba(255,255,255,0.025)] transition-colors"
-                    style={{ borderBottom: i < students.length - 1 ? "1px solid rgba(201,169,122,0.05)" : "none" }}>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-[#060D1F] shrink-0"
-                          style={{ background: "linear-gradient(135deg, #D4B483, #B8924A)" }}>
-                          {initials}
-                        </div>
-                        <span className="font-medium text-white">{s.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-[rgba(255,255,255,0.45)] text-[13px]">{s.email}</td>
-                    <td className="px-5 py-4 text-[rgba(255,255,255,0.35)] text-[13px]">{s.church ?? "—"}</td>
-                    <td className="px-5 py-4">
-                      {s.enrollments.length === 0
-                        ? <span className="text-[rgba(255,255,255,0.2)] text-xs">Nenhum</span>
-                        : (
-                          <div className="flex flex-wrap gap-1">
-                            {s.enrollments.map(e => (
-                              <span key={e.course.title}
-                                className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                                style={{ background: "rgba(201,169,122,0.1)", border: "1px solid rgba(201,169,122,0.2)", color: "#C9A97A" }}>
-                                {e.course.title}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                    </td>
-                    <td className="px-5 py-4 text-[rgba(255,255,255,0.3)] text-[12px]">
-                      {new Date(s.createdAt).toLocaleDateString("pt-BR")}
-                    </td>
-                    <td className="px-5 py-4">
-                      <Link href={`/admin/alunos/${s.id}`}>
-                        <Button variant="ghost" size="sm">Ver</Button>
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+        ) : (
+          <div style={{
+            borderRadius: 20, overflow: "hidden",
+            background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+            border: "1px solid rgba(201,169,122,0.12)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.35)",
+          }}>
+            {/* Table head */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "2fr 2fr 1fr 2fr 1fr 80px",
+              padding: "12px 24px",
+              borderBottom: "1px solid rgba(201,169,122,0.10)",
+              background: "rgba(201,169,122,0.03)",
+            }}>
+              {["Aluno", "E-mail", "Igreja", "Cursos", "Cadastro", ""].map(h => (
+                <span key={h} style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "var(--gold)" }}>
+                  {h}
+                </span>
+              ))}
+            </div>
+
+            {/* Rows */}
+            {students.map((s, i) => {
+              const initials = s.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "?";
+              return (
+                <div key={s.id} style={{
+                  display: "grid", gridTemplateColumns: "2fr 2fr 1fr 2fr 1fr 80px",
+                  alignItems: "center", padding: "14px 24px",
+                  borderTop: i > 0 ? "1px solid rgba(201,169,122,0.06)" : "none",
+                  transition: "background 0.2s",
+                }}
+                className="admin-row-hover">
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{
+                      width: 34, height: 34, borderRadius: "50%", flexShrink: 0,
+                      background: "radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 50%, var(--gold-deep))",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 11,
+                      color: "var(--navy-darkest)",
+                      boxShadow: "0 0 10px rgba(201,169,122,0.25)",
+                    }}>
+                      {initials}
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {s.name}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 8 }}>
+                    {s.email}
+                  </span>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{s.church ?? "—"}</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                    {s.enrollments.length === 0
+                      ? <span style={{ fontSize: 11, color: "var(--text-muted)" }}>—</span>
+                      : s.enrollments.map(e => (
+                          <span key={e.course.title} style={{
+                            fontSize: 10, fontWeight: 600,
+                            background: "rgba(201,169,122,0.08)", border: "1px solid var(--gold-20)",
+                            color: "var(--gold)", padding: "2px 8px", borderRadius: 999,
+                          }}>
+                            {e.course.title}
+                          </span>
+                        ))}
+                  </div>
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                    {new Date(s.createdAt).toLocaleDateString("pt-BR")}
+                  </span>
+                  <Link href={`/admin/alunos/${s.id}`} style={{
+                    padding: "6px 14px", borderRadius: 8,
+                    background: "rgba(201,169,122,0.08)", border: "1px solid var(--gold-20)",
+                    color: "var(--gold-light)", fontSize: 11, fontWeight: 600,
+                    letterSpacing: 1, textDecoration: "none",
+                    display: "inline-block", textAlign: "center",
+                  }}>
+                    Ver
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

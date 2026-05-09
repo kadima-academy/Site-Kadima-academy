@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle, Circle } from "lucide-react";
 import Link from "next/link";
 import EnrollButton from "@/components/admin/enroll-button";
 
@@ -37,83 +36,145 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
 
   const enrolledIds = student.enrollments.map(e => e.courseId);
   const notEnrolled = allCourses.filter(c => !enrolledIds.includes(c.id));
+  const initials = student.name?.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() ?? "?";
 
   return (
-    <div className="p-8 max-w-4xl">
-      <Link href="/admin/alunos" className="inline-flex items-center gap-2 text-xs text-[rgba(255,255,255,0.35)] hover:text-[#C9A97A] mb-8 tracking-wide transition-colors">
-        <ArrowLeft size={13} /> Alunos
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+
+      {/* Back */}
+      <Link href="/admin/alunos" className="ka-back-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Alunos
       </Link>
 
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <p className="text-xs tracking-[3px] uppercase text-[#C9A97A] mb-1">Perfil</p>
-          <h1 className="text-2xl font-semibold text-white">{student.name}</h1>
-          <p className="text-sm text-[rgba(255,255,255,0.4)] mt-1">{student.email}</p>
-        </div>
-        {notEnrolled.length > 0 && (
-          <EnrollButton studentId={studentId} courses={notEnrolled} />
-        )}
-      </div>
-
-      {/* Info */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {[
-          { label: "Telefone", value: student.phone ?? "—" },
-          { label: "Igreja", value: student.church ?? "—" },
-          { label: "Cadastrado em", value: new Date(student.createdAt).toLocaleDateString("pt-BR") },
-        ].map(({ label, value }) => (
-          <div key={label} className="rounded-xl border border-[rgba(201,169,122,0.1)] p-4"
-            style={{ background: "rgba(15,26,61,0.4)" }}>
-            <p className="text-[10px] tracking-widest uppercase text-[rgba(255,255,255,0.3)] mb-1">{label}</p>
-            <p className="text-sm text-white">{value}</p>
+      {/* Profile hero */}
+      <div style={{ margin: "16px 44px 0" }}>
+        <div style={{
+          borderRadius: 20, padding: "28px 32px",
+          background: "linear-gradient(135deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+          border: "1px solid rgba(201,169,122,0.14)",
+          boxShadow: "0 16px 48px rgba(0,0,0,0.40)",
+          display: "flex", alignItems: "center", gap: 20,
+        }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: "50%", flexShrink: 0,
+            background: "radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 50%, var(--gold-deep))",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22,
+            color: "var(--navy-darkest)",
+            boxShadow: "0 0 30px rgba(201,169,122,0.40), 0 0 60px rgba(201,169,122,0.15)",
+            border: "2px solid var(--gold-light)",
+          }}>
+            {initials}
           </div>
-        ))}
+          <div style={{ flex: 1 }}>
+            <div className="ka-page-eyebrow" style={{ marginBottom: 4 }}>Perfil do Aluno</div>
+            <h1 style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, letterSpacing: 2, color: "var(--text-primary)", marginBottom: 4 }}>
+              {student.name}
+            </h1>
+            <p style={{ fontSize: 13, color: "var(--text-muted)" }}>{student.email}</p>
+          </div>
+          {notEnrolled.length > 0 && (
+            <EnrollButton studentId={studentId} courses={notEnrolled} />
+          )}
+        </div>
       </div>
 
-      {/* Progresso por curso */}
-      <h2 className="text-sm font-semibold text-white tracking-wide mb-4">Progresso nos Cursos</h2>
-      <div className="flex flex-col gap-4">
-        {student.enrollments.length === 0 ? (
-          <p className="text-sm text-[rgba(255,255,255,0.3)]">Nenhum curso matriculado.</p>
-        ) : student.enrollments.map(({ course }) => {
-          const totalLessons = course.modules.reduce((a, m) => a + m.lessons.length, 0);
-          const doneLessons = course.modules.reduce((a, m) => a + m.lessons.filter(l => l.progress[0]?.completed).length, 0);
-          const pct = totalLessons > 0 ? Math.round((doneLessons / totalLessons) * 100) : 0;
+      <div style={{ padding: "24px 44px 44px" }}>
 
-          return (
-            <div key={course.id} className="rounded-2xl border border-[rgba(201,169,122,0.1)] overflow-hidden"
-              style={{ background: "rgba(15,26,61,0.4)" }}>
-              <div className="px-5 py-4 flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-white">{course.title}</p>
-                  <p className="text-xs text-[rgba(255,255,255,0.35)] mt-0.5">{doneLessons}/{totalLessons} aulas concluídas</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold text-[#C9A97A]">{pct}%</p>
-                </div>
-              </div>
-              <div className="h-1 bg-[rgba(255,255,255,0.05)]">
-                <div className="h-full bg-gradient-to-r from-[#C9A97A] to-[#E8D5A8] transition-all"
-                  style={{ width: `${pct}%` }} />
-              </div>
-              {course.modules.map(mod => (
-                <div key={mod.id} className="border-t border-[rgba(201,169,122,0.06)] px-5 py-3">
-                  <p className="text-xs text-[rgba(255,255,255,0.4)] mb-2">{mod.title}</p>
-                  <div className="flex flex-col gap-1">
-                    {mod.lessons.map(lesson => (
-                      <div key={lesson.id} className="flex items-center gap-2">
-                        {lesson.progress[0]?.completed
-                          ? <CheckCircle size={12} className="text-emerald-400 shrink-0" />
-                          : <Circle size={12} className="text-[rgba(255,255,255,0.2)] shrink-0" />}
-                        <span className="text-xs text-[rgba(255,255,255,0.5)]">{lesson.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+        {/* Info cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 28 }}>
+          {[
+            { label: "Telefone", value: student.phone ?? "—" },
+            { label: "Igreja / Org.", value: student.church ?? "—" },
+            { label: "Cadastrado em", value: new Date(student.createdAt).toLocaleDateString("pt-BR") },
+          ].map(({ label, value }) => (
+            <div key={label} style={{
+              borderRadius: 14, padding: "16px 20px",
+              background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+              border: "1px solid rgba(201,169,122,0.10)",
+            }}>
+              <p style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "var(--gold)", marginBottom: 6 }}>
+                {label}
+              </p>
+              <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>{value}</p>
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Course progress */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 3, height: 16, background: "linear-gradient(180deg, var(--gold-light), var(--gold))", borderRadius: 2, boxShadow: "0 0 8px var(--gold)" }} />
+          <h2 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: "var(--text-primary)" }}>
+            Progresso nos Cursos
+          </h2>
+        </div>
+
+        {student.enrollments.length === 0 ? (
+          <p style={{ fontSize: 13, color: "var(--text-muted)", padding: "24px 0" }}>Nenhum curso matriculado.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {student.enrollments.map(({ course }) => {
+              const totalLessons = course.modules.reduce((a, m) => a + m.lessons.length, 0);
+              const doneLessons = course.modules.reduce((a, m) => a + m.lessons.filter(l => l.progress[0]?.completed).length, 0);
+              const pct = totalLessons > 0 ? Math.round((doneLessons / totalLessons) * 100) : 0;
+
+              return (
+                <div key={course.id} style={{
+                  borderRadius: 16, overflow: "hidden",
+                  background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+                  border: "1px solid rgba(201,169,122,0.10)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+                }}>
+                  <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(201,169,122,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div>
+                      <h3 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 13, letterSpacing: 1.5, color: "var(--text-primary)", marginBottom: 3 }}>
+                        {course.title}
+                      </h3>
+                      <p style={{ fontSize: 11, color: "var(--text-muted)" }}>{doneLessons}/{totalLessons} aulas concluídas</p>
+                    </div>
+                    <span style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, color: "var(--gold-light)" }}>
+                      {pct}%
+                    </span>
+                  </div>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.05)" }}>
+                    <div className="ka-progress-fill" style={{ width: `${pct}%`, height: "100%" }} />
+                  </div>
+                  {course.modules.map(mod => (
+                    <div key={mod.id} style={{ padding: "12px 20px", borderTop: "1px solid rgba(201,169,122,0.05)" }}>
+                      <p style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "var(--gold)", marginBottom: 8 }}>
+                        {mod.title}
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                        {mod.lessons.map(lesson => {
+                          const done = lesson.progress[0]?.completed;
+                          return (
+                            <div key={lesson.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              {done ? (
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                              ) : (
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                  <circle cx="12" cy="12" r="10"/>
+                                </svg>
+                              )}
+                              <span style={{ fontSize: 12, color: done ? "var(--text-secondary)" : "var(--text-muted)" }}>
+                                {lesson.title}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

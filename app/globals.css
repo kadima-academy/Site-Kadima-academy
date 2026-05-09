@@ -485,6 +485,16 @@ body {
 }
 .ka-back-link:hover { color: var(--gold-light); }
 
+/* ── Admin hover rows ── */
+.admin-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-35) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.50), 0 0 0 1px rgba(201,169,122,0.20) !important;
+}
+.admin-row-hover:hover {
+  background: rgba(201,169,122,0.04) !important;
+}
+
 /* ── Lesson row hover ── */
 .lesson-row:hover {
   background: rgba(201,169,122,0.04) !important;
