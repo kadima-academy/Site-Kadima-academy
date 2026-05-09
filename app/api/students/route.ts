@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { emailBoasVindas } from "@/lib/email-templates";
 
 const schema = z.object({
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   });
 
   // Envia email de boas-vindas (sem bloquear a resposta)
-  resend.emails.send({
+  getResend().emails.send({
     from: FROM_EMAIL,
     to: email,
     subject: "Bem-vindo à Kadima Academy!",

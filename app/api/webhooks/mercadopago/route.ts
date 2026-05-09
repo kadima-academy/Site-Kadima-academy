@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { mpPayment } from "@/lib/mercadopago";
-import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { emailConfirmacaoPagamento } from "@/lib/email-templates";
 
 function verifySignature(req: NextRequest, rawBody: string): boolean {
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 
       // Email de confirmação de pagamento
       if (user?.email && course) {
-        resend.emails.send({
+        getResend().emails.send({
           from: FROM_EMAIL,
           to: user.email,
           subject: `Pagamento confirmado — ${course.title}`,

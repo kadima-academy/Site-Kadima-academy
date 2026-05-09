@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { emailAvisoRenovacao } from "@/lib/email-templates";
 
 export async function GET(req: NextRequest) {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     if (![7, 3, 1].includes(daysLeft)) continue;
 
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: FROM_EMAIL,
         to: enrollment.user.email,
         subject: `Seu acesso expira em ${daysLeft} dia${daysLeft !== 1 ? "s" : ""} — ${enrollment.course.title}`,
