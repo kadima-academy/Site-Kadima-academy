@@ -23,9 +23,7 @@ export async function POST(req: NextRequest) {
   // Encerra qualquer sessão ativa anterior
   await prisma.liveSession.updateMany({ where: { active: true }, data: { active: false, endedAt: new Date() } });
 
-  // Sanitize: lowercase, spaces → hyphens, remove special chars
-  const sanitize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  const room = roomName?.trim() ? sanitize(roomName.trim()) : `kadima-${Date.now()}`;
+  const room = roomName?.trim() || `kadima-${Date.now()}`;
   const live = await prisma.liveSession.create({ data: { title: title.trim(), roomName: room, active: true } });
 
   return NextResponse.json(live, { status: 201 });
