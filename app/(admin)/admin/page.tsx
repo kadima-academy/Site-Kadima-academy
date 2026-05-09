@@ -95,12 +95,8 @@ export default async function AdminDashboard() {
               return (
                 <div
                   key={s.id}
-                  className="px-5 py-3.5 flex items-center gap-3 transition-colors"
-                  style={{
-                    borderTop: i > 0 ? "1px solid #1a1a1a" : undefined,
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  className="px-5 py-3.5 flex items-center gap-3 transition-colors hover:bg-white/[0.02]"
+                  style={{ borderTop: i > 0 ? "1px solid rgba(201,169,122,0.06)" : undefined }}
                 >
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
