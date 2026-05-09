@@ -7,6 +7,7 @@ const updateSchema = z.object({
   title: z.string().min(2).optional(),
   description: z.string().optional(),
   thumbnail: z.string().optional(),
+  price: z.number().positive().nullable().optional(),
   published: z.boolean().optional(),
 });
 

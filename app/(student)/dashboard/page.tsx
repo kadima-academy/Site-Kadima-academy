@@ -29,7 +29,8 @@ export default async function DashboardPage() {
         published: true,
         enrollments: { none: { userId: session.user.id } },
       },
-      include: {
+      select: {
+        id: true, title: true, thumbnail: true, price: true,
         _count: { select: { modules: true, enrollments: true } },
         modules: { include: { _count: { select: { lessons: true } } } },
       },
@@ -240,19 +241,35 @@ export default async function DashboardPage() {
                       <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-muted)", flexShrink: 0 }} />
                       <span>{totalLessons} aula{totalLessons !== 1 ? "s" : ""}</span>
                     </div>
-                    <div style={{
-                      width: "100%", padding: "10px 14px", borderRadius: 12,
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      background: "rgba(255,255,255,0.03)",
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-                      color: "var(--text-muted)", fontSize: 11, fontWeight: 600,
-                      fontFamily: "'Cinzel',serif", letterSpacing: 1.5, textTransform: "uppercase",
-                    }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                      </svg>
-                      Solicitar Acesso
-                    </div>
+                    {course.price ? (
+                      <Link href={`/checkout/${course.id}`} style={{
+                        width: "100%", padding: "10px 14px", borderRadius: 12, textDecoration: "none",
+                        background: "linear-gradient(135deg, var(--gold), var(--gold-deep))",
+                        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 7,
+                        color: "var(--navy-darkest)", fontSize: 11, fontWeight: 700,
+                        fontFamily: "'Cinzel',serif", letterSpacing: 1.5, textTransform: "uppercase",
+                        boxShadow: "0 4px 16px rgba(201,169,122,0.30)",
+                      }}>
+                        <span>Comprar Agora</span>
+                        <span style={{ fontSize: 12, fontWeight: 700 }}>
+                          R$ {course.price.toFixed(2).replace(".", ",")}
+                        </span>
+                      </Link>
+                    ) : (
+                      <div style={{
+                        width: "100%", padding: "10px 14px", borderRadius: 12,
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        background: "rgba(255,255,255,0.03)",
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                        color: "var(--text-muted)", fontSize: 11, fontWeight: 600,
+                        fontFamily: "'Cinzel',serif", letterSpacing: 1.5, textTransform: "uppercase",
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        Solicitar Acesso
+                      </div>
+                    )}
                   </div>
                 </article>
               );

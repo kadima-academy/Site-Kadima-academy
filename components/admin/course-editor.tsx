@@ -9,7 +9,7 @@ import { Plus, Trash2, ChevronDown, ChevronRight, Eye, EyeOff, Pencil, X, Check 
 
 type Lesson = { id: string; title: string; youtubeUrl: string; duration: string | null; content: string | null; order: number };
 type Module = { id: string; title: string; thumbnail: string | null; order: number; lessons: Lesson[] };
-type Course = { id: string; title: string; description: string | null; thumbnail: string | null; published: boolean; modules: Module[] };
+type Course = { id: string; title: string; description: string | null; thumbnail: string | null; price: number | null; published: boolean; modules: Module[] };
 
 const textareaClass = "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(201,169,122,0.18)] rounded-xl px-4 py-3 text-sm text-white placeholder-[rgba(255,255,255,0.2)] outline-none resize-none focus:border-[rgba(201,169,122,0.5)] focus:bg-[rgba(255,255,255,0.06)] transition-all";
 const labelClass = "text-[10px] tracking-[3px] uppercase text-[rgba(201,169,122,0.7)] font-medium mb-2 block";
@@ -33,7 +33,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
     const res = await fetch(`/api/courses/${course.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: course.title, description: course.description, thumbnail: course.thumbnail, published: course.published }),
+      body: JSON.stringify({ title: course.title, description: course.description, thumbnail: course.thumbnail, price: course.price, published: course.published }),
     });
     if (res.ok) router.refresh();
     setSaving(false);
@@ -128,6 +128,18 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
             className={textareaClass} rows={3} placeholder="Descreva o curso..." />
         </div>
         <Input label="URL da Capa" value={course.thumbnail ?? ""} onChange={e => setCourse(c => ({ ...c, thumbnail: e.target.value }))} placeholder="https://..." />
+        <div>
+          <label className={labelClass}>Preço (R$) <span style={{ color: "rgba(255,255,255,0.25)", fontFamily: "'Poppins',sans-serif", fontSize: 10, letterSpacing: 1, textTransform: "none", fontWeight: 400 }}>(deixe vazio para acesso somente por matrícula manual)</span></label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value={course.price ?? ""}
+            onChange={e => setCourse(c => ({ ...c, price: e.target.value ? parseFloat(e.target.value) : null }))}
+            placeholder="Ex: 197.00"
+            className="w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(201,169,122,0.18)] rounded-xl px-4 py-3 text-sm text-white placeholder-[rgba(255,255,255,0.2)] outline-none"
+          />
+        </div>
       </div>
 
       {/* Módulos */}

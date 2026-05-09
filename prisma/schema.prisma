@@ -70,6 +70,7 @@ model User {
   enrollments    Enrollment[]
   progress       LessonProgress[]
   liveAttendance LiveAttendance[]
+  payments       Payment[]
 }
 
 // ── LMS ───────────────────────────────────────────────────────
@@ -81,12 +82,14 @@ model Course {
   description String?
   thumbnail   String?
   published   Boolean  @default(false)
+  price       Float?
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   modules     Module[]
   enrollments Enrollment[]
+  payments    Payment[]
 }
 
 model Module {
@@ -143,6 +146,21 @@ model LessonProgress {
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  courseId        String
+  amount          Float
+  status          String   @default("pending") // pending | approved | rejected | cancelled
+  mpPaymentId     String?
+  mpPreferenceId  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model LiveSession {
