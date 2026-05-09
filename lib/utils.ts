@@ -14,6 +14,12 @@ export function slugify(text: string) {
     .replace(/(^-|-$)/g, "");
 }
 
+export function getGoogleDriveImageUrl(url: string): string {
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+  return url;
+}
+
 export function getYoutubeId(url: string): string | null {
   const patterns = [
     /youtu\.be\/([^?&]+)/,

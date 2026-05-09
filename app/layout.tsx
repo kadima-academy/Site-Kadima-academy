@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Barlow_Condensed } from "next/font/google";
+import { Poppins, Cinzel } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -9,10 +9,10 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const barlow = Barlow_Condensed({
+const cinzel = Cinzel({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-barlow",
+  weight: ["400", "600", "700", "900"],
+  variable: "--font-cinzel",
   display: "swap",
 });
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`h-full ${poppins.variable} ${barlow.variable}`}>
+    <html lang="pt-BR" className={`h-full ${poppins.variable} ${cinzel.variable}`}>
       <body className="h-full" style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
         {children}
       </body>

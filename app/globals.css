@@ -1,21 +1,18 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-gold:        #C9A97A;
-  --color-gold-light:  #E8D5A8;
-  --color-gold-dim:    rgba(201,169,122,0.5);
+  --color-gold:       #C9A97A;
+  --color-gold-light: #E8D5A8;
+  --color-gold-dark:  #9A7A50;
+  --color-navy:       #060D1F;
+  --color-navy-mid:   #0F1A3D;
+  --color-navy-deep:  #1B2E6B;
+  --color-card:       rgba(15,26,61,0.6);
+  --color-border:     rgba(201,169,122,0.15);
+  --color-muted:      rgba(255,255,255,0.4);
+  --color-subtle:     rgba(255,255,255,0.2);
 
-  --color-bg:          #0D0D0D;
-  --color-card:        #111111;
-  --color-card2:       #161616;
-  --color-border:      #222222;
-  --color-border-soft: #1a1a1a;
-
-  --color-text:        #FFFFFF;
-  --color-muted:       #888888;
-  --color-subtle:      #555555;
-
-  --font-display: "Barlow Condensed", sans-serif;
+  --font-display: "Cinzel", "Trajan Pro", serif;
   --font-sans:    "Poppins", sans-serif;
 }
 
@@ -23,33 +20,47 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: #0D0D0D;
+  background: #060D1F;
   color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #0D0D0D; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+::-webkit-scrollbar-track { background: #060D1F; }
+::-webkit-scrollbar-thumb { background: rgba(201,169,122,0.25); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,169,122,0.5); }
+
+/* Starfield effect */
+.stars-bg {
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 35%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 55% 80%, rgba(201,169,122,0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 10% 85%, rgba(201,169,122,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 50%, rgba(255,255,255,0.2) 0%, transparent 100%);
+}
+
+/* Gold bokeh blobs */
+.bokeh-bg {
+  background:
+    radial-gradient(ellipse 40% 30% at 20% 50%, rgba(201,169,122,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(26,46,107,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 50% at 60% 90%, rgba(201,169,122,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(15,26,61,0.3) 0%, transparent 80%);
+}
 
 .font-display { font-family: var(--font-display); }
 
-.prose-lesson h1, .prose-lesson h2, .prose-lesson h3 {
-  color: #fff;
-  font-weight: 600;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-}
+/* Lesson content styles */
+.prose-lesson h1, .prose-lesson h2, .prose-lesson h3 { color: #fff; font-weight: 600; margin-top: 1.5em; margin-bottom: 0.5em; }
 .prose-lesson p { margin-bottom: 1em; color: rgba(255,255,255,0.75); }
 .prose-lesson ul, .prose-lesson ol { padding-left: 1.5em; margin-bottom: 1em; color: rgba(255,255,255,0.75); }
 .prose-lesson li { margin-bottom: 0.3em; }
 .prose-lesson strong { color: #C9A97A; }
 .prose-lesson a { color: #C9A97A; text-decoration: underline; }
-.prose-lesson blockquote {
-  border-left: 3px solid rgba(201,169,122,0.4);
-  padding-left: 1em;
-  color: rgba(255,255,255,0.5);
-  margin: 1em 0;
-}
+.prose-lesson blockquote { border-left: 3px solid rgba(201,169,122,0.4); padding-left: 1em; color: rgba(255,255,255,0.5); margin: 1em 0; }
