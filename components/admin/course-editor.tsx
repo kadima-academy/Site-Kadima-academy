@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getYoutubeId } from "@/lib/utils";
+import { getYoutubeId, getGoogleDriveImageUrl } from "@/lib/utils";
 import { Plus, Trash2, ChevronDown, ChevronRight, Eye, EyeOff, Pencil, X, Check } from "lucide-react";
 
 type Lesson = { id: string; title: string; youtubeUrl: string; duration: string | null; content: string | null; order: number };
@@ -159,7 +159,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                 ? <ChevronDown size={14} className="text-[#C9A97A]" />
                 : <ChevronRight size={14} className="text-[rgba(255,255,255,0.4)]" />}
               {mod.thumbnail
-                ? <img src={mod.thumbnail} alt="" className="w-8 h-10 object-contain rounded shrink-0" style={{ border: "1px solid rgba(201,169,122,0.15)" }} />
+                ? <img src={mod.thumbnail.includes("drive.google.com") ? getGoogleDriveImageUrl(mod.thumbnail) : mod.thumbnail} alt="" className="w-8 h-10 object-contain rounded shrink-0" style={{ border: "1px solid rgba(201,169,122,0.15)" }} />
                 : <span className="text-xs text-[rgba(201,169,122,0.5)] w-5 font-bold shrink-0">{mi + 1}.</span>}
               <span className="text-sm font-semibold text-white flex-1">{mod.title}</span>
               <span className="text-xs text-[rgba(255,255,255,0.3)]">{mod.lessons.length} aula(s)</span>

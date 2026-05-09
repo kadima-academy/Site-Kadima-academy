@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import DeleteCourseButton from "@/components/admin/delete-course-button";
+import { getGoogleDriveImageUrl } from "@/lib/utils";
 
 export default async function CursosPage() {
   const courses = await prisma.course.findMany({
@@ -63,6 +64,9 @@ export default async function CursosPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {courses.map(course => {
               const totalLessons = course.modules.reduce((a, m) => a + m._count.lessons, 0);
+              const thumbUrl = course.thumbnail?.includes("drive.google.com")
+                ? getGoogleDriveImageUrl(course.thumbnail)
+                : course.thumbnail;
               return (
                 <div key={course.id} style={{
                   borderRadius: 16, overflow: "hidden",
@@ -80,8 +84,8 @@ export default async function CursosPage() {
                     border: "1px solid rgba(201,169,122,0.10)",
                     display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
                   }}>
-                    {course.thumbnail
-                      ? <img src={course.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", position: "absolute", inset: 0 }} />
+                    {thumbUrl
+                      ? <img src={thumbUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", position: "absolute", inset: 0 }} />
                       : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "rgba(201,169,122,0.20)" }}>
                           <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
                         </svg>}
