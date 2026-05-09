@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { getYoutubeId } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, CheckCircle, Circle } from "lucide-react";
 import Link from "next/link";
 import ProgressButton from "@/components/student/progress-button";
 
@@ -37,102 +36,213 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
   const ytId = getYoutubeId(lesson.youtubeUrl);
   const isCompleted = lesson.progress[0]?.completed ?? false;
 
-  return (
-    <div className="flex h-full">
-      {/* Player + info */}
-      <div className="flex-1 overflow-y-auto p-8">
-        <Link href={`/cursos/${slug}`} className="inline-flex items-center gap-2 text-xs text-[rgba(255,255,255,0.35)] hover:text-[#C9A97A] mb-6 tracking-wide transition-colors">
-          <ArrowLeft size={13} /> {course.title}
-        </Link>
+  const done = allLessons.filter(l => l.progress[0]?.completed).length;
+  const total = allLessons.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
-        {/* Player YouTube */}
-        <div className="rounded-2xl overflow-hidden mb-6 bg-black"
-          style={{ aspectRatio: "16/9" }}>
-          {ytId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1`}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-[rgba(255,255,255,0.3)] text-sm">
-              Vídeo não disponível
+  return (
+    <div style={{ display: "flex", height: "100%", background: "var(--navy-darkest)" }}>
+
+      {/* ── Main content ── */}
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
+        {/* Top bar */}
+        <div style={{
+          padding: "14px 28px",
+          borderBottom: "1px solid rgba(201,169,122,0.10)",
+          display: "flex", alignItems: "center", gap: 14,
+          background: "linear-gradient(135deg, rgba(201,169,122,0.03) 0%, transparent 100%)",
+          flexShrink: 0,
+        }}>
+          <Link href={`/cursos/${slug}`} style={{
+            display: "flex", alignItems: "center", gap: 7,
+            fontSize: 11, fontWeight: 500, letterSpacing: 1.5,
+            textTransform: "uppercase", color: "var(--gold)", textDecoration: "none",
+            transition: "color 0.2s",
+          }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            {course.title}
+          </Link>
+          <div style={{ flex: 1 }} />
+          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+            Aula {currentIndex + 1} de {total}
+          </span>
+          <div style={{ width: 80 }}>
+            <div className="ka-progress-bar">
+              <div className="ka-progress-fill" style={{ width: `${pct}%` }} />
             </div>
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--gold)", fontFamily: "'Cinzel',serif" }}>{pct}%</span>
+        </div>
+
+        {/* Video player */}
+        <div style={{ padding: "24px 28px 0" }}>
+          <div style={{
+            borderRadius: 16, overflow: "hidden",
+            background: "#000",
+            border: "1px solid rgba(201,169,122,0.10)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.60)",
+            aspectRatio: "16/9",
+          }}>
+            {ytId ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1`}
+                style={{ width: "100%", height: "100%", display: "block" }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: "rgba(201,169,122,0.20)" }}>
+                  <rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4V8z"/>
+                </svg>
+                <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Vídeo não disponível</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Lesson info */}
+        <div style={{ padding: "20px 28px 0" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 10 }}>
+            <div>
+              <h1 style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 20, letterSpacing: 1.5, color: "var(--text-primary)", lineHeight: 1.3 }}>
+                {lesson.title}
+              </h1>
+              {lesson.duration && (
+                <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4, display: "flex", alignItems: "center", gap: 5 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  {lesson.duration}
+                </p>
+              )}
+            </div>
+            <ProgressButton lessonId={lesson.id} completed={isCompleted} />
+          </div>
+
+          {lesson.description && (
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 20 }}>
+              {lesson.description}
+            </p>
           )}
         </div>
 
-        {/* Título e ações */}
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-xl font-semibold text-white">{lesson.title}</h1>
-            {lesson.duration && <p className="text-xs text-[rgba(255,255,255,0.4)] mt-1">{lesson.duration}</p>}
-          </div>
-          <ProgressButton lessonId={lesson.id} completed={isCompleted} />
-        </div>
-
-        {lesson.description && (
-          <p className="text-sm text-[rgba(255,255,255,0.5)] mb-6 leading-relaxed">{lesson.description}</p>
-        )}
-
+        {/* Course material */}
         {lesson.content && (
-          <div className="rounded-2xl overflow-hidden mb-6" style={{
-            background: "rgba(15,26,61,0.5)",
-            border: "1px solid rgba(201,169,122,0.12)",
-          }}>
-            <div className="px-5 py-3 flex items-center gap-2" style={{ borderBottom: "1px solid rgba(201,169,122,0.08)", background: "rgba(201,169,122,0.03)" }}>
-              <span className="text-[10px] tracking-[3px] uppercase font-semibold text-[#C9A97A]">Material da Aula</span>
+          <div style={{ margin: "8px 28px 0" }}>
+            <div style={{
+              borderRadius: 16, overflow: "hidden",
+              background: "rgba(15,26,61,0.5)",
+              border: "1px solid rgba(201,169,122,0.12)",
+            }}>
+              <div style={{
+                padding: "11px 20px",
+                borderBottom: "1px solid rgba(201,169,122,0.08)",
+                background: "rgba(201,169,122,0.03)",
+                display: "flex", alignItems: "center", gap: 8,
+              }}>
+                <div style={{ width: 3, height: 14, background: "var(--gold)", borderRadius: 2, boxShadow: "0 0 6px var(--gold)" }} />
+                <span style={{ fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "var(--gold)" }}>
+                  Material da Aula
+                </span>
+              </div>
+              <div className="prose-lesson" style={{ padding: "20px 24px", color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 14 }}
+                dangerouslySetInnerHTML={{ __html: lesson.content }}
+              />
             </div>
-            <div
-              className="p-6 prose-lesson"
-              dangerouslySetInnerHTML={{ __html: lesson.content }}
-              style={{ color: "rgba(255,255,255,0.8)", lineHeight: "1.8", fontSize: "15px" }}
-            />
           </div>
         )}
 
-        {/* Navegação */}
-        <div className="flex items-center justify-between pt-6 border-t border-[rgba(201,169,122,0.1)]">
+        {/* Navigation */}
+        <div style={{
+          margin: "20px 28px 28px",
+          padding: "18px 20px",
+          borderRadius: 14,
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(201,169,122,0.08)",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}>
           {prev ? (
-            <Link href={`/cursos/${slug}/aula/${prev.id}`}
-              className="flex items-center gap-2 text-sm text-[rgba(255,255,255,0.5)] hover:text-white transition-colors">
-              <ArrowLeft size={14} /> Aula anterior
+            <Link href={`/cursos/${slug}/aula/${prev.id}`} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              fontSize: 12, color: "var(--text-muted)", textDecoration: "none",
+              fontWeight: 500, transition: "color 0.2s",
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+              </svg>
+              Anterior
             </Link>
           ) : <div />}
+          <div style={{ fontSize: 11, color: "var(--text-muted)", textAlign: "center" }}>
+            {currentIndex + 1} / {total}
+          </div>
           {next ? (
-            <Link href={`/cursos/${slug}/aula/${next.id}`}
-              className="flex items-center gap-2 text-sm text-[#C9A97A] hover:text-[#E8D5A8] transition-colors font-medium">
-              Próxima aula <ArrowRight size={14} />
+            <Link href={`/cursos/${slug}/aula/${next.id}`} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              fontSize: 12, color: "var(--gold)", textDecoration: "none",
+              fontWeight: 600, letterSpacing: 0.5, transition: "color 0.2s",
+            }}>
+              Próxima
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </Link>
           ) : (
-            <Link href={`/cursos/${slug}`}
-              className="flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
-              Concluído! Ver curso <ArrowRight size={14} />
+            <Link href={`/cursos/${slug}`} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              fontSize: 12, color: "#6ee7b7", textDecoration: "none",
+              fontWeight: 600, transition: "color 0.2s",
+            }}>
+              ✓ Concluído
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </Link>
           )}
         </div>
       </div>
 
-      {/* Sidebar — lista de aulas */}
-      <aside className="w-72 border-l border-[rgba(201,169,122,0.1)] overflow-y-auto shrink-0"
-        style={{ background: "rgba(6,13,31,0.8)" }}>
-        <div className="px-4 py-4 border-b border-[rgba(201,169,122,0.1)]">
-          <p className="text-xs tracking-[2px] uppercase text-[rgba(255,255,255,0.3)]">Conteúdo do Curso</p>
+      {/* ── Lesson list sidebar ── */}
+      <aside className="ka-lesson-sidebar" style={{ width: 280, overflow: "hidden auto", flexShrink: 0 }}>
+        <div style={{
+          padding: "14px 16px",
+          borderBottom: "1px solid rgba(201,169,122,0.10)",
+          background: "rgba(201,169,122,0.02)",
+        }}>
+          <p style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 600, letterSpacing: 4, textTransform: "uppercase", color: "var(--gold)" }}>
+            Conteúdo
+          </p>
         </div>
-        <div className="pb-4">
+        <div style={{ paddingBottom: 16 }}>
           {course.modules.map((mod) => (
             <div key={mod.id}>
-              <p className="px-4 pt-4 pb-2 text-[10px] tracking-widest uppercase text-[rgba(201,169,122,0.6)]">{mod.title}</p>
+              <p className="ka-lesson-module-title">{mod.title}</p>
               {mod.lessons.map((l) => {
                 const active = l.id === lessonId;
-                const done = l.progress[0]?.completed;
+                const lDone = l.progress[0]?.completed;
                 return (
                   <Link key={l.id} href={`/cursos/${slug}/aula/${l.id}`}
-                    className={`flex items-center gap-3 px-4 py-3 transition-all ${active ? "bg-[rgba(201,169,122,0.1)] border-r-2 border-[#C9A97A]" : "hover:bg-[rgba(255,255,255,0.03)]"}`}>
-                    {done
-                      ? <CheckCircle size={13} className="text-emerald-400 shrink-0" />
-                      : <Circle size={13} className={`shrink-0 ${active ? "text-[#C9A97A]" : "text-[rgba(255,255,255,0.2)]"}`} />}
-                    <span className={`text-xs leading-tight ${active ? "text-white font-medium" : "text-[rgba(255,255,255,0.5)]"}`}>
+                    className={`ka-lesson-item${active ? " active" : ""}`}
+                    style={{ textDecoration: "none" }}>
+                    {lDone ? (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
+                    ) : (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={active ? "var(--gold)" : "rgba(201,169,122,0.25)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <circle cx="12" cy="12" r="10"/>
+                      </svg>
+                    )}
+                    <span style={{
+                      fontSize: 12, lineHeight: 1.4,
+                      color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                      fontWeight: active ? 600 : 400,
+                      fontFamily: "'Poppins',sans-serif",
+                    }}>
                       {l.title}
                     </span>
                   </Link>

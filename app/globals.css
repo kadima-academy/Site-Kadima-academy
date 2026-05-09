@@ -98,9 +98,9 @@ body {
   width: 80px; height: 80px;
   margin: 0 auto 14px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, var(--gold-bright) 0%, var(--gold) 35%, var(--gold-deep) 100%);
+  background: transparent;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow-gold-lg), inset 0 -4px 12px rgba(0,0,0,0.25), inset 0 4px 12px rgba(255,255,255,0.35);
+  box-shadow: 0 0 30px rgba(201,169,122,0.30), 0 0 60px rgba(201,169,122,0.12);
   position: relative;
 }
 .ka-logo-ring::before {
@@ -246,16 +246,13 @@ body {
   width: 100px; height: 100px;
   margin: 0 auto 18px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 25%, var(--gold-bright) 0%, var(--gold) 40%, var(--gold-deep) 100%);
+  background: transparent;
   display: flex; align-items: center; justify-content: center;
   box-shadow:
-    0 0 50px rgba(232,213,168,0.65),
-    0 0 100px rgba(201,169,122,0.35),
-    inset 0 -6px 16px rgba(0,0,0,0.30),
-    inset 0 6px 16px rgba(255,255,255,0.40);
+    0 0 50px rgba(232,213,168,0.50),
+    0 0 100px rgba(201,169,122,0.25);
   position: relative;
   animation: float 5s ease-in-out infinite;
-  overflow: hidden;
 }
 .ka-hero-logo::before {
   content: '';
@@ -285,7 +282,7 @@ body {
 }
 
 .ka-thumb {
-  position: relative; height: 260px;
+  position: relative; height: 345px;
   background:
     radial-gradient(ellipse at 30% 30%, rgba(201,169,122,0.20) 0%, transparent 55%),
     linear-gradient(140deg, #0A1129 0%, #14215A 50%, #0A1129 100%);
@@ -393,6 +390,106 @@ body {
   border-color: var(--gold-light);
   box-shadow: 0 6px 20px rgba(201,169,122,0.40);
   transform: translateY(-1px);
+}
+
+/* ── Page Header (sub-hero para páginas internas) ── */
+.ka-page-header {
+  padding: 36px 44px 28px;
+  border-bottom: 1px solid rgba(201,169,122,0.10);
+  background: linear-gradient(135deg, rgba(201,169,122,0.04) 0%, transparent 60%);
+  position: relative;
+}
+.ka-page-header::before {
+  content: '';
+  position: absolute; bottom: 0; left: 44px; right: 44px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(201,169,122,0.25) 30%, rgba(201,169,122,0.25) 70%, transparent 100%);
+}
+.ka-page-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.ka-page-title {
+  font-family: 'Cinzel', serif;
+  font-size: 26px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.ka-page-title span { color: var(--gold-light); }
+.ka-page-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px; font-weight: 300;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Lesson Sidebar (conteúdo do curso) ── */
+.ka-lesson-sidebar {
+  background: linear-gradient(180deg, #050A18 0%, #0A1129 100%);
+  border-left: 1px solid rgba(201,169,122,0.10);
+}
+.ka-lesson-module-title {
+  font-family: 'Cinzel', serif;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold);
+  padding: 16px 16px 8px;
+}
+.ka-lesson-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px;
+  border-right: 3px solid transparent;
+  transition: all var(--t-fast);
+  text-decoration: none;
+}
+.ka-lesson-item:hover {
+  background: rgba(201,169,122,0.05);
+}
+.ka-lesson-item.active {
+  background: rgba(201,169,122,0.10);
+  border-right-color: var(--gold);
+}
+
+/* ── Live page ── */
+.ka-live-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 28px 44px 24px;
+  border-bottom: 1px solid rgba(201,169,122,0.10);
+}
+.ka-live-indicator {
+  display: flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, rgba(230,57,70,0.15), rgba(230,57,70,0.08));
+  border: 1px solid rgba(230,57,70,0.30);
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  color: #FF8088;
+  box-shadow: 0 0 16px rgba(230,57,70,0.25);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Back link ── */
+.ka-back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  transition: color var(--t-fast);
+  padding: 10px 44px 0;
+}
+.ka-back-link:hover { color: var(--gold-light); }
+
+/* ── Lesson row hover ── */
+.lesson-row:hover {
+  background: rgba(201,169,122,0.04) !important;
+}
+.lesson-row:hover img {
+  opacity: 1 !important;
 }
 
 /* ── Prose ── */

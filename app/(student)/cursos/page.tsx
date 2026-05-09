@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { BookOpen, Play, ChevronRight, Lock } from "lucide-react";
+import { getGoogleDriveImageUrl } from "@/lib/utils";
+import CourseThumbnail from "@/components/student/course-thumbnail";
 
 export default async function CursosPage() {
   const session = await auth();
@@ -27,142 +28,97 @@ export default async function CursosPage() {
   });
 
   return (
-    <div className="p-8">
+    <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
+
       {/* Header */}
-      <div className="mb-10">
-        <p className="text-[11px] tracking-[5px] uppercase text-[#C9A97A] mb-3 font-medium">Minha Jornada</p>
-        <h1 className="text-4xl font-bold text-white tracking-tight">Meus Cursos</h1>
-        <p className="text-base text-[rgba(255,255,255,0.4)] mt-2">{enrollments.length} curso(s) matriculado(s)</p>
+      <div className="ka-page-header">
+        <div className="ka-page-eyebrow">Minha Jornada</div>
+        <h1 className="ka-page-title">Meus <span>Cursos</span></h1>
+        <p className="ka-page-subtitle">
+          {enrollments.length === 0
+            ? "Nenhum curso matriculado ainda"
+            : `${enrollments.length} curso${enrollments.length > 1 ? "s" : ""} matriculado${enrollments.length > 1 ? "s" : ""}`}
+        </p>
       </div>
 
-      <div className="h-px mb-8" style={{ background: "linear-gradient(90deg, rgba(201,169,122,0.15), transparent)" }} />
-
-      {enrollments.length === 0 ? (
-        <div className="rounded-2xl p-16 text-center max-w-md" style={{
-          background: "linear-gradient(135deg, rgba(15,26,61,0.4), rgba(10,18,45,0.5))",
-          border: "1px solid rgba(201,169,122,0.1)",
-        }}>
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center"
-            style={{ background: "rgba(201,169,122,0.08)", border: "1px solid rgba(201,169,122,0.12)" }}>
-            <BookOpen size={28} className="text-[rgba(201,169,122,0.4)]" />
+      <div style={{ padding: "36px 44px 44px" }}>
+        {enrollments.length === 0 ? (
+          <div style={{
+            borderRadius: 20, padding: "56px 32px", textAlign: "center", maxWidth: 380,
+            background: "linear-gradient(160deg, var(--navy-card) 0%, var(--navy-card-2) 100%)",
+            border: "1px solid rgba(201,169,122,0.12)",
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+              strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: "rgba(201,169,122,0.25)", margin: "0 auto 16px", display: "block" }}>
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5a2.5 2.5 0 0 0 0 5H20"/>
+            </svg>
+            <p style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>Nenhum curso ainda</p>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>Entre em contato com a administração para se matricular.</p>
           </div>
-          <p className="text-[rgba(255,255,255,0.6)] text-sm font-medium mb-1">Nenhum curso ainda</p>
-          <p className="text-[rgba(255,255,255,0.25)] text-xs leading-relaxed">
-            Entre em contato com a administração para se matricular.
-          </p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-6 max-w-3xl">
-          {enrollments.map(({ course }) => {
-            const allLessons = course.modules.flatMap(m => m.lessons);
-            const done = allLessons.filter(l => l.progress[0]?.completed).length;
-            const total = allLessons.length;
-            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-            const nextLesson = allLessons.find(l => !l.progress[0]?.completed) ?? allLessons[0];
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 }}>
+            {enrollments.map(({ course }) => {
+              const allLessons = course.modules.flatMap(m => m.lessons);
+              const done = allLessons.filter(l => l.progress[0]?.completed).length;
+              const total = allLessons.length;
+              const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+              const nextLesson = allLessons.find(l => !l.progress[0]?.completed) ?? allLessons[0];
+              const thumbnailUrl = course.thumbnail?.includes("drive.google.com")
+                ? getGoogleDriveImageUrl(course.thumbnail)
+                : course.thumbnail;
+              const label = pct > 0 && pct < 100 ? "Continuar" : pct === 100 ? "Rever" : "Começar";
 
-            return (
-              <div key={course.id} className="rounded-2xl overflow-hidden transition-all duration-300"
-                style={{
-                  background: "linear-gradient(135deg, rgba(15,26,61,0.7), rgba(10,18,45,0.85))",
-                  border: "1px solid rgba(201,169,122,0.12)",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
-                }}>
-
-                {/* Course header */}
-                <div className="h-28 relative overflow-hidden"
-                  style={{ background: "linear-gradient(135deg, #0F1A3D, #1B2E6B)" }}>
-                  {course.thumbnail
-                    ? <img src={course.thumbnail} alt="" className="w-full h-full object-cover opacity-40" />
-                    : <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen size={36} className="text-[rgba(201,169,122,0.12)]" />
-                      </div>}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 20%, rgba(6,13,31,0.85) 100%)" }} />
-                  <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
-                    <h2 className="text-lg font-bold text-white">{course.title}</h2>
-                    {pct === 100 && (
-                      <span className="text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full shrink-0 ml-3"
-                        style={{ background: "rgba(16,185,129,0.2)", border: "1px solid rgba(16,185,129,0.3)", color: "#6ee7b7" }}>
-                        ✓ Concluído
-                      </span>
+              return (
+                <article key={course.id} className="ka-card">
+                  <div className="ka-thumb">
+                    {thumbnailUrl && <CourseThumbnail src={thumbnailUrl} alt={course.title} />}
+                    <div className="ka-thumb-mark">
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 6.5C2 5.67 2.67 5 3.5 5H8c1.66 0 3 1.34 3 3v12c0-1.1-.9-2-2-2H3.5c-.83 0-1.5-.67-1.5-1.5v-10z"/>
+                        <path d="M22 6.5C22 5.67 21.33 5 20.5 5H16c-1.66 0-3 1.34-3 3v12c0-1.1.9-2 2-2h5.5c.83 0 1.5-.67 1.5-1.5v-10z"/>
+                      </svg>
+                    </div>
+                    <div className="ka-progress-badge">{pct}%</div>
+                    {nextLesson && (
+                      <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-play-overlay">
+                        <div className="ka-play-circle">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </Link>
                     )}
                   </div>
-                </div>
 
-                <div className="p-5">
-                  {/* Progress */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-                      <div className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${pct}%`,
-                          background: pct === 100
-                            ? "linear-gradient(90deg, #6ee7b7, #34d399)"
-                            : "linear-gradient(90deg, #C9A97A, #E8D5A8)",
-                        }} />
+                  <div style={{ padding: "20px 22px 22px" }}>
+                    <h3 style={{ fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 16, letterSpacing: 1.5, color: "var(--text-primary)", marginBottom: 6, lineHeight: 1.3 }}>
+                      {course.title}
+                    </h3>
+                    <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold)", boxShadow: "0 0 4px var(--gold)", flexShrink: 0 }} />
+                      {done}/{total} aula{total !== 1 ? "s" : ""} concluída{done !== 1 ? "s" : ""}
                     </div>
-                    <span className="text-xs font-bold text-[#C9A97A] shrink-0">{pct}%</span>
-                    <span className="text-xs text-[rgba(255,255,255,0.3)] shrink-0">{done}/{total} aulas</span>
+                    <div className="ka-progress-bar" style={{ marginBottom: 16 }}>
+                      <div className="ka-progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                    {nextLesson ? (
+                      <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`} className="ka-continue-btn">
+                        {label}
+                        <span style={{ transition: "transform 0.2s" }}>→</span>
+                      </Link>
+                    ) : (
+                      <Link href={`/cursos/${course.slug}`} className="ka-continue-btn">
+                        Ver Curso →
+                      </Link>
+                    )}
                   </div>
-
-                  {/* Continue button */}
-                  {nextLesson && (
-                    <Link href={`/cursos/${course.slug}/aula/${nextLesson.id}`}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-200 hover:scale-[1.01] group/btn"
-                      style={{
-                        background: "linear-gradient(135deg, rgba(201,169,122,0.12), rgba(201,169,122,0.06))",
-                        border: "1px solid rgba(201,169,122,0.18)",
-                      }}>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                        style={{ background: "linear-gradient(135deg, #D4B483, #B8924A)" }}>
-                        <Play size={11} fill="#060D1F" className="translate-x-px" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#C9A97A]">
-                          {pct === 0 ? "Começar curso" : pct === 100 ? "Rever curso" : "Continuar de onde parei"}
-                        </p>
-                        <p className="text-[11px] text-[rgba(255,255,255,0.35)] truncate mt-0.5">{nextLesson.title}</p>
-                      </div>
-                      <ChevronRight size={15} className="text-[rgba(201,169,122,0.4)] group-hover/btn:translate-x-0.5 transition-transform shrink-0" />
-                    </Link>
-                  )}
-
-                  {/* Modules list */}
-                  {course.modules.length > 0 && (
-                    <div className="mt-4 flex flex-col gap-2">
-                      {course.modules.map(mod => {
-                        const modDone = mod.lessons.filter(l => l.progress[0]?.completed).length;
-                        const modTotal = mod.lessons.length;
-                        const firstLesson = mod.lessons[0];
-                        return (
-                          <div key={mod.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                            style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
-                            <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
-                              style={{ background: modDone === modTotal && modTotal > 0 ? "rgba(16,185,129,0.15)" : "rgba(201,169,122,0.08)" }}>
-                              {modDone === modTotal && modTotal > 0
-                                ? <span className="text-[10px] text-emerald-400">✓</span>
-                                : <Lock size={10} className="text-[rgba(201,169,122,0.4)]" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-[rgba(255,255,255,0.7)] truncate">{mod.title}</p>
-                              <p className="text-[10px] text-[rgba(255,255,255,0.3)]">{modDone}/{modTotal} aulas</p>
-                            </div>
-                            {firstLesson && (
-                              <Link href={`/cursos/${course.slug}/aula/${firstLesson.id}`}
-                                className="text-[10px] text-[#C9A97A] hover:text-[#E8D5A8] transition-colors font-medium shrink-0">
-                                Ver →
-                              </Link>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
