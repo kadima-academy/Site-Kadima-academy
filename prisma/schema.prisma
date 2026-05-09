@@ -145,6 +145,15 @@ model LessonProgress {
   @@unique([userId, lessonId])
 }
 
+model LiveSession {
+  id        String    @id @default(cuid())
+  title     String
+  roomName  String
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  endedAt   DateTime?
+}
+
 model LiveAttendance {
   id       String   @id @default(cuid())
   userId   String
