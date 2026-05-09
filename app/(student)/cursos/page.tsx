@@ -57,7 +57,7 @@ export default async function CursosPage() {
             <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>Entre em contato com a administração para se matricular.</p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 280px))", gap: 24 }}>
             {enrollments.map(({ course }) => {
               const allLessons = course.modules.flatMap(m => m.lessons);
               const done = allLessons.filter(l => l.progress[0]?.completed).length;
