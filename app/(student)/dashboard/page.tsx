@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
+import CourseThumbnail from "@/components/student/course-thumbnail";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -116,10 +117,7 @@ export default async function DashboardPage() {
                 <article key={course.id} className="ka-card">
                   {/* Thumbnail */}
                   <div className="ka-thumb">
-                    {thumbnailUrl && (
-                      <img src={thumbnailUrl} alt={course.title} className="ka-thumb-img"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-                    )}
+                    {thumbnailUrl && <CourseThumbnail src={thumbnailUrl} alt={course.title} />}
                     {/* Placeholder icon (hidden when image loads) */}
                     <div className="ka-thumb-mark">
                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
