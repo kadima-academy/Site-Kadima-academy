@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { mpPayment } from "@/lib/mercadopago";
+import { resend, FROM_EMAIL } from "@/lib/resend";
+import { emailConfirmacaoPagamento } from "@/lib/email-templates";
 
 function verifySignature(req: NextRequest, rawBody: string): boolean {
   const secret = process.env.MP_WEBHOOK_SECRET;
@@ -72,7 +74,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (status === "approved") {
-      const course = await prisma.course.findUnique({ where: { id: courseId }, select: { paymentType: true } });
+      const [course, user] = await Promise.all([
+        prisma.course.findUnique({ where: { id: courseId }, select: { title: true, paymentType: true, price: true } }),
+        prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
+      ]);
+
       const expiresAt = course?.paymentType === "MONTHLY"
         ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         : null;
@@ -82,6 +88,21 @@ export async function POST(req: NextRequest) {
         create: { userId, courseId, expiresAt },
         update: { expiresAt },
       });
+
+      // Email de confirmação de pagamento
+      if (user?.email && course) {
+        resend.emails.send({
+          from: FROM_EMAIL,
+          to: user.email,
+          subject: `Pagamento confirmado — ${course.title}`,
+          html: emailConfirmacaoPagamento({
+            name: user.name ?? "Aluno",
+            courseName: course.title,
+            amount: mpData.transaction_amount ?? course.price ?? 0,
+            isMonthly: course.paymentType === "MONTHLY",
+          }),
+        }).catch(err => console.error("[email/pagamento]", err));
+      }
     }
 
     return NextResponse.json({ ok: true });
