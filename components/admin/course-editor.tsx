@@ -109,6 +109,9 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
     goldBar: { width: 3, height: 18, background: "linear-gradient(180deg, #E8D5A8, #C9A97A)", borderRadius: 2, boxShadow: "0 0 8px rgba(201,169,122,0.5)", flexShrink: 0 },
     card: { background: "linear-gradient(160deg, rgba(15,26,61,0.6) 0%, rgba(10,18,45,0.6) 100%)", border: "1px solid rgba(201,169,122,0.12)", borderRadius: 20, overflow: "hidden" as const },
     btnGold: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 18px", borderRadius: 10, background: "linear-gradient(135deg, rgba(201,169,122,0.15), rgba(201,169,122,0.05))", border: "1px solid rgba(201,169,122,0.3)", color: "#C9A97A", fontSize: 11, fontFamily: "'Cinzel',serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, cursor: "pointer" },
+    btnPrimary: { display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px", borderRadius: 12, background: "linear-gradient(135deg, #C9A97A, #A07840)", border: "none", color: "#060D1F", fontSize: 11, fontFamily: "'Cinzel',serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" as const, cursor: "pointer", boxShadow: "0 4px 16px rgba(201,169,122,0.30)" } as React.CSSProperties,
+    btnSave: { display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 22px", borderRadius: 12, background: "linear-gradient(135deg, #C9A97A, #A07840)", border: "none", color: "#060D1F", fontSize: 11, fontFamily: "'Cinzel',serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" as const, cursor: "pointer", boxShadow: "0 4px 16px rgba(201,169,122,0.35)", flexShrink: 0 } as React.CSSProperties,
+    btnGhost: { display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", borderRadius: 12, background: "transparent", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.45)", fontSize: 11, fontFamily: "'Cinzel',serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, cursor: "pointer" } as React.CSSProperties,
     btnRed: { display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 6, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.2)", cursor: "pointer", transition: "all 0.2s" },
     btnEdit: { display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 6, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.2)", cursor: "pointer", transition: "all 0.2s" },
   };
@@ -140,7 +143,15 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
           }}>
             {course.published ? <><Eye size={13} /> Publicado</> : <><EyeOff size={13} /> Rascunho</>}
           </button>
-          <Button size="sm" loading={saving} onClick={saveCourse}>Salvar</Button>
+          <button onClick={saveCourse} disabled={saving} style={{ ...S.btnSave, opacity: saving ? 0.6 : 1 }}>
+            {saving ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 1s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            )}
+            {saving ? "Salvando..." : "Salvar"}
+          </button>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
       </div>
@@ -226,8 +237,8 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
             <input value={newModuleTitle} onChange={e => setNewModuleTitle(e.target.value)} placeholder="Nome do módulo *" onKeyDown={e => e.key === "Enter" && addModule()} style={{ ...S.input, borderColor: "rgba(201,169,122,0.3)" }} />
             <input value={newModuleThumbnail} onChange={e => setNewModuleThumbnail(e.target.value)} placeholder="URL da capa do módulo (800×1000px)" style={S.input} />
             <div style={{ display: "flex", gap: 8 }}>
-              <Button size="sm" onClick={addModule}>Adicionar</Button>
-              <Button size="sm" variant="ghost" onClick={() => { setAddingModule(false); setNewModuleThumbnail(""); }}>Cancelar</Button>
+              <button style={S.btnPrimary} onClick={addModule}>Adicionar</button>
+              <button style={S.btnGhost} onClick={() => { setAddingModule(false); setNewModuleThumbnail(""); }}>Cancelar</button>
             </div>
           </div>
         </div>
@@ -281,16 +292,18 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                       return (
                         <div key={lesson.id} style={{ background: "rgba(6,13,31,0.8)", border: "1px solid rgba(201,169,122,0.25)", borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
                           <p style={{ ...S.label, marginBottom: 0 }}>Editando Aula</p>
-                          <div style={S.field}><label style={S.label}>Título</label><Input label="" value={editLesson.title} onChange={e => setEditLesson(l => ({ ...l, title: e.target.value }))} /></div>
-                          <div style={S.field}><label style={S.label}>Link YouTube</label><Input label="" value={editLesson.youtubeUrl} onChange={e => setEditLesson(l => ({ ...l, youtubeUrl: e.target.value }))} /></div>
-                          <div style={S.field}><label style={S.label}>Duração</label><Input label="" value={editLesson.duration} onChange={e => setEditLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                          <div style={S.field}><label style={S.label}>Título</label><input style={S.input} value={editLesson.title} onChange={e => setEditLesson(l => ({ ...l, title: e.target.value }))} /></div>
+                          <div style={S.field}><label style={S.label}>Link YouTube</label><input style={S.input} value={editLesson.youtubeUrl} onChange={e => setEditLesson(l => ({ ...l, youtubeUrl: e.target.value }))} /></div>
+                          <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={editLesson.duration} onChange={e => setEditLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
                           <div style={S.field}>
                             <label style={S.label}>Conteúdo HTML (apostila)</label>
                             <textarea value={editLesson.content} onChange={e => setEditLesson(l => ({ ...l, content: e.target.value }))} style={S.textarea} rows={10} placeholder="Cole o HTML da apostila..." />
                           </div>
                           <div style={{ display: "flex", gap: 8 }}>
-                            <Button size="sm" loading={editSaving} onClick={() => saveEditLesson(mod.id, lesson.id)}><Check size={12} /> Salvar</Button>
-                            <Button size="sm" variant="ghost" onClick={() => setEditingLesson(null)}><X size={12} /> Cancelar</Button>
+                            <button style={{ ...S.btnPrimary, opacity: editSaving ? 0.6 : 1 }} onClick={() => saveEditLesson(mod.id, lesson.id)} disabled={editSaving}>
+                              <Check size={12} /> {editSaving ? "Salvando..." : "Salvar Aula"}
+                            </button>
+                            <button style={S.btnGhost} onClick={() => setEditingLesson(null)}><X size={12} /> Cancelar</button>
                           </div>
                         </div>
                       );
@@ -334,16 +347,16 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                 {addingLesson === mod.id ? (
                   <div style={{ background: "rgba(6,13,31,0.7)", border: "1px solid rgba(201,169,122,0.18)", borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
                     <p style={{ ...S.label, marginBottom: 0 }}>Nova Aula</p>
-                    <div style={S.field}><label style={S.label}>Título *</label><Input label="" value={newLesson.title} onChange={e => setNewLesson(l => ({ ...l, title: e.target.value }))} placeholder="Ex: Introdução ao Módulo" /></div>
-                    <div style={S.field}><label style={S.label}>Link YouTube *</label><Input label="" value={newLesson.youtubeUrl} onChange={e => setNewLesson(l => ({ ...l, youtubeUrl: e.target.value }))} placeholder="https://youtu.be/..." /></div>
-                    <div style={S.field}><label style={S.label}>Duração</label><Input label="" value={newLesson.duration} onChange={e => setNewLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                    <div style={S.field}><label style={S.label}>Título *</label><input style={S.input} value={newLesson.title} onChange={e => setNewLesson(l => ({ ...l, title: e.target.value }))} placeholder="Ex: Introdução ao Módulo" /></div>
+                    <div style={S.field}><label style={S.label}>Link YouTube *</label><input style={S.input} value={newLesson.youtubeUrl} onChange={e => setNewLesson(l => ({ ...l, youtubeUrl: e.target.value }))} placeholder="https://youtu.be/..." /></div>
+                    <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={newLesson.duration} onChange={e => setNewLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
                     <div style={S.field}>
                       <label style={S.label}>Conteúdo HTML (apostila)</label>
-                      <textarea value={newLesson.content} onChange={e => setNewLesson(l => ({ ...l, content: e.target.value }))} style={S.textarea} rows={8} placeholder={"Cole aqui o HTML da apostila..."} />
+                      <textarea value={newLesson.content} onChange={e => setNewLesson(l => ({ ...l, content: e.target.value }))} style={S.textarea} rows={8} placeholder="Cole aqui o HTML da apostila..." />
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
-                      <Button size="sm" onClick={() => addLesson(mod.id)}>Adicionar Aula</Button>
-                      <Button size="sm" variant="ghost" onClick={() => setAddingLesson(null)}>Cancelar</Button>
+                      <button style={S.btnPrimary} onClick={() => addLesson(mod.id)}><Check size={12} /> Adicionar Aula</button>
+                      <button style={S.btnGhost} onClick={() => setAddingLesson(null)}>Cancelar</button>
                     </div>
                   </div>
                 ) : (
