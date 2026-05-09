@@ -4,6 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 
+export async function GET() {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true, name: true, email: true },
+  });
+
+  return NextResponse.json(user);
+}
+
 const updateSchema = z.object({
   name: z.string().min(2).optional(),
   currentPassword: z.string().optional(),
