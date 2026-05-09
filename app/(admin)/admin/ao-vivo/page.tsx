@@ -52,7 +52,7 @@ export default async function AdminAoVivoPage() {
         )}
       </div>
 
-      <div style={{ padding: "28px 44px 44px" }}>
+      <div className="ka-section" style={{ padding: "28px 44px 44px" }}>
 
         {/* Live controls (client) */}
         <LiveControls activeSession={activeSession ? { ...activeSession, createdAt: activeSession.createdAt.toISOString() } : null} />

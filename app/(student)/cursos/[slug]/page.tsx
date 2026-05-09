@@ -81,7 +81,7 @@ export default async function CursoPage({ params }: { params: Promise<{ slug: st
       </div>
 
       {/* Modules grid */}
-      <section style={{ padding: "32px 44px 44px" }}>
+      <section className="ka-section" style={{ padding: "32px 44px 44px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{
             width: 36, height: 36, borderRadius: 10,

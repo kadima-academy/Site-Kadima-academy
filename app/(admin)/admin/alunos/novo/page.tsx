@@ -46,7 +46,7 @@ export default function NovoAlunoPage() {
         Alunos
       </Link>
 
-      <div style={{ padding: "20px 44px 44px", maxWidth: 600 }}>
+      <div className="ka-section" style={{ padding: "20px 44px 44px", maxWidth: 600 }}>
         <div className="ka-page-eyebrow" style={{ marginBottom: 6 }}>Novo</div>
         <h1 className="ka-page-title" style={{ fontSize: 24, marginBottom: 28 }}>
           Cadastrar <span>Aluno</span>

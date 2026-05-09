@@ -54,7 +54,7 @@ export default async function AdminDashboard() {
         <p className="ka-page-subtitle">Gestão da plataforma Kadima Academy</p>
       </div>
 
-      <div style={{ padding: "32px 44px 44px" }}>
+      <div className="ka-section" style={{ padding: "32px 44px 44px" }}>
 
         {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>

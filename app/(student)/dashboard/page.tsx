@@ -70,7 +70,7 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Meus Cursos ── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "38px 44px 44px" }}>
+      <section className="ka-section" style={{ position: "relative", zIndex: 1, padding: "38px 44px 44px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
           <div style={{
             width: 38, height: 38, borderRadius: 12,
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
 
       {/* ── Cursos que você pode gostar ── */}
       {otherCourses.length > 0 && (
-        <section style={{ padding: "0 44px 56px" }}>
+        <section className="ka-section" style={{ padding: "0 44px 56px" }}>
           {/* Divider */}
           <div style={{ height: 1, marginBottom: 36, background: "linear-gradient(90deg, transparent 0%, rgba(201,169,122,0.18) 30%, rgba(201,169,122,0.18) 70%, transparent 100%)", position: "relative" }}>
             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", background: "var(--navy-mid)", padding: "0 16px" }}>

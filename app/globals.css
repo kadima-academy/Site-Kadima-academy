@@ -511,3 +511,121 @@ body {
 .prose-lesson strong { color: #C9A97A; }
 .prose-lesson a { color: #C9A97A; text-decoration: underline; }
 .prose-lesson blockquote { border-left: 3px solid rgba(201,169,122,0.4); padding-left: 1em; color: rgba(255,255,255,0.5); margin: 1em 0; }
+
+/* ═══════════════════════════════════════
+   MOBILE BOTTOM NAV
+   ═══════════════════════════════════════ */
+.ka-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: linear-gradient(180deg, rgba(6,10,28,0.97) 0%, #060D1F 100%);
+  border-top: 1px solid rgba(201,169,122,0.15);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.50);
+}
+.ka-mobile-nav-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; flex: 1; height: 100%;
+  text-decoration: none; cursor: pointer;
+  color: rgba(255,255,255,0.30);
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.5px;
+  border: none; background: none;
+  transition: color 0.2s;
+  padding: 0;
+  position: relative;
+}
+.ka-mobile-nav-btn.active {
+  color: var(--gold-light);
+}
+.ka-mobile-nav-btn.active::before {
+  content: '';
+  position: absolute; top: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 8px var(--gold);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — 768px breakpoint
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Sidebar off, bottom nav on */
+  .ka-sidebar { display: none !important; }
+  .ka-mobile-nav { display: flex; }
+
+  /* Main content bottom padding for nav bar */
+  .ka-main { padding-bottom: 64px; }
+
+  /* Page headers */
+  .ka-page-header {
+    padding: 20px 16px 16px !important;
+  }
+  .ka-page-header::before {
+    left: 16px !important;
+    right: 16px !important;
+  }
+  .ka-page-eyebrow { font-size: 9px !important; letter-spacing: 3px !important; }
+  .ka-page-title { font-size: 18px !important; letter-spacing: 1.5px !important; }
+
+  /* Live header */
+  .ka-live-header {
+    padding: 16px 16px 14px !important;
+    gap: 10px !important;
+  }
+  .ka-live-header h1 { font-size: 16px !important; }
+
+  /* Back link */
+  .ka-back-link { padding: 10px 16px 0 !important; }
+
+  /* Hero */
+  .ka-hero { height: 200px !important; }
+  .ka-hero-logo { width: 72px !important; height: 72px !important; }
+
+  /* Card grid — single column on small phones, 2 cols on larger */
+  .ka-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  /* Card thumbnail shorter on mobile */
+  .ka-thumb { height: 220px !important; }
+
+  /* Lesson sidebar hidden on mobile (show content full width) */
+  .ka-lesson-sidebar { display: none !important; }
+
+  /* Admin sidebar (Tailwind-based) */
+  aside.w-\[240px\] { display: none !important; }
+}
+
+/* Section padding helper — use className="ka-section" on page content wrappers */
+.ka-section { padding: 32px 44px 44px; }
+
+@media (max-width: 768px) {
+  .ka-section { padding: 16px 16px 24px !important; }
+
+  /* Card grid responsive */
+  .ka-section .ka-card, .ka-card {
+    /* cards already auto-fill — just ensure grid works on mobile */
+  }
+
+  /* Hero title scaling */
+  .ka-hero h1 { font-size: 22px !important; letter-spacing: 4px !important; }
+  .ka-hero p { font-size: 12px !important; }
+}
+
+/* Medium screens — keep sidebar but reduce card padding */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .ka-page-header { padding: 24px 24px 20px !important; }
+  .ka-page-header::before { left: 24px !important; right: 24px !important; }
+  .ka-live-header { padding: 20px 24px 18px !important; }
+  .ka-back-link { padding: 10px 24px 0 !important; }
+}

@@ -41,7 +41,7 @@ export default async function CursosPage() {
         </p>
       </div>
 
-      <div style={{ padding: "36px 44px 44px" }}>
+      <div className="ka-section" style={{ padding: "36px 44px 44px" }}>
         {enrollments.length === 0 ? (
           <div style={{
             borderRadius: 20, padding: "56px 32px", textAlign: "center", maxWidth: 380,
