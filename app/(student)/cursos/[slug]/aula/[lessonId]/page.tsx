@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { getYoutubeId } from "@/lib/utils";
 import Link from "next/link";
 import ProgressButton from "@/components/student/progress-button";
+import LessonComments from "@/components/student/lesson-comments";
 
 export default async function AulaPage({ params }: { params: Promise<{ slug: string; lessonId: string }> }) {
   const session = await auth();
@@ -162,6 +163,13 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
         )}
+
+        {/* Comments */}
+        <LessonComments
+          lessonId={lesson.id}
+          userId={session.user.id}
+          isAdmin={session.user.role === "ADMIN"}
+        />
 
         {/* Navigation */}
         <div style={{

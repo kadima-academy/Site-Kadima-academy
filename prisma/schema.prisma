@@ -76,6 +76,7 @@ model User {
   progress       LessonProgress[]
   liveAttendance LiveAttendance[]
   payments       Payment[]
+  comments       Comment[]
 }
 
 // ── LMS ───────────────────────────────────────────────────────
@@ -126,6 +127,7 @@ model Lesson {
 
   module   Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progress LessonProgress[]
+  comments Comment[]
 }
 
 model Enrollment {
@@ -168,6 +170,17 @@ model Payment {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  lessonId  String
+  userId    String
+  body      String
+  createdAt DateTime @default(now())
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model LiveSession {
