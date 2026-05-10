@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
 
     const status = mpData.status;
     const externalRef = mpData.external_reference;
+    const preferenceId = mpData.preference_id ? String(mpData.preference_id) : null;
 
     if (!externalRef) return NextResponse.json({ ok: true });
 
@@ -66,7 +67,11 @@ export async function POST(req: NextRequest) {
     if (!userId || !courseId) return NextResponse.json({ ok: true });
 
     await prisma.payment.updateMany({
-      where: { userId, courseId, status: "pending" },
+      where: {
+        userId,
+        courseId,
+        ...(preferenceId ? { mpPreferenceId: preferenceId } : { status: "pending" }),
+      },
       data: {
         status: status ?? "pending",
         mpPaymentId: paymentId,
