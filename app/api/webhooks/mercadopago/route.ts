@@ -59,7 +59,8 @@ export async function POST(req: NextRequest) {
 
     const status = mpData.status;
     const externalRef = mpData.external_reference;
-    const preferenceId = mpData.preference_id ? String(mpData.preference_id) : null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preferenceId = (mpData as any).preference_id ? String((mpData as any).preference_id) : null;
 
     if (!externalRef) return NextResponse.json({ ok: true });
 
