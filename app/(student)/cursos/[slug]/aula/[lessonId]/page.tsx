@@ -5,6 +5,7 @@ import { getYoutubeId } from "@/lib/utils";
 import Link from "next/link";
 import ProgressButton from "@/components/student/progress-button";
 import LessonComments from "@/components/student/lesson-comments";
+import HtmlContent from "@/components/student/html-content";
 
 export default async function AulaPage({ params }: { params: Promise<{ slug: string; lessonId: string }> }) {
   const session = await auth();
@@ -138,9 +139,7 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
           </div>
 
           {lesson.description && (
-            <div className="prose-lesson" style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 20 }}
-              dangerouslySetInnerHTML={{ __html: lesson.description }}
-            />
+            <HtmlContent html={lesson.description} className="prose-lesson" style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 20 }} />
           )}
         </div>
 
@@ -163,9 +162,7 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
                   Material da Aula
                 </span>
               </div>
-              <div className="prose-lesson" style={{ padding: "20px 24px", color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 14 }}
-                dangerouslySetInnerHTML={{ __html: lesson.content }}
-              />
+              <HtmlContent html={lesson.content} className="prose-lesson" style={{ padding: "20px 24px", color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 14 }} />
             </div>
           </div>
         )}

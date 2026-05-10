@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getYoutubeId } from "@/lib/utils";
+import HtmlContent from "@/components/student/html-content";
 
 export const revalidate = 0;
 
@@ -106,11 +107,7 @@ export default async function AulaDaSemanaPage() {
                 Material da Aula
               </span>
             </div>
-            <div
-              className="prose-lesson"
-              style={{ padding: "20px 24px", color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 14 }}
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            <HtmlContent html={content} className="prose-lesson" style={{ padding: "20px 24px", color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 14 }} />
           </div>
         )}
       </div>
