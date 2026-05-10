@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-export const FROM_EMAIL = "Kadima Academy <noreply@kadima.academy>";
+export const FROM_EMAIL = "Kadima Academy <noreply@kadimamkt.com.br>";
 
 let _resend: Resend | null = null;
 
