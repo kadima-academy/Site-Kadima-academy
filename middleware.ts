@@ -13,7 +13,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const role = token?.role as string | undefined;
 
-  if (pathname === "/login") {
+  if (pathname === "/login" || pathname === "/cadastro") {
     if (token) {
       return NextResponse.redirect(new URL(role === "ADMIN" ? "/admin" : "/dashboard", req.url));
     }
