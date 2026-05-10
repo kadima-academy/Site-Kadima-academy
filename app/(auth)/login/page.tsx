@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -134,14 +135,13 @@ export default function LoginPage() {
 
           {/* Logo */}
           <div className="login-logo-wrap" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 32 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/logo-nova.png"
               alt="Kadima Academy"
+              width={110}
+              height={110}
               className="login-logo-img"
               style={{
-                width: 110,
-                height: 110,
                 objectFit: "contain",
                 marginBottom: 16,
                 filter: "drop-shadow(0 0 28px rgba(201,169,122,0.35))",
