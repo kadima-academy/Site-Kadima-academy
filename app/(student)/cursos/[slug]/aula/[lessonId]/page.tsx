@@ -138,9 +138,9 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
           </div>
 
           {lesson.description && (
-            <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 20 }}>
-              {lesson.description}
-            </p>
+            <div className="prose-lesson" style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 20 }}
+              dangerouslySetInnerHTML={{ __html: lesson.description }}
+            />
           )}
         </div>
 

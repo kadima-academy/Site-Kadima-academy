@@ -103,9 +103,9 @@ export default function CheckoutPage({ params, searchParams }: { params: Promise
               </h1>
 
               {course.description && (
-                <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 16 }}>
-                  {course.description}
-                </p>
+                <div className="prose-lesson" style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 16 }}
+                  dangerouslySetInnerHTML={{ __html: course.description }}
+                />
               )}
 
               <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
