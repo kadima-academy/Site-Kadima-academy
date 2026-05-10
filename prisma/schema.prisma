@@ -184,6 +184,13 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model WeeklyLesson {
+  id         String   @id @default("weekly")
+  youtubeUrl String   @default("")
+  content    String?
+  updatedAt  DateTime @updatedAt
+}
+
 model LiveSession {
   id        String    @id @default(cuid())
   title     String
