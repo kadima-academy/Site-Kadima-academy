@@ -158,8 +158,8 @@ export default function CadastroPage() {
               alt="Kadima Academy"
               style={{
                 width: 90, height: 90, objectFit: "contain", marginBottom: 14,
-                mixBlendMode: "multiply",
-                filter: "drop-shadow(0 0 20px rgba(201,169,122,0.40))",
+                borderRadius: 16,
+                boxShadow: "0 0 0 1px rgba(201,169,122,0.20), 0 8px 32px rgba(0,0,0,0.40)",
               }}
             />
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
