@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import EnrollButton from "@/components/admin/enroll-button";
 import UnenrollButton from "@/components/admin/unenroll-button";
+import DeleteStudentButton from "@/components/admin/delete-student-button";
 
 export default async function StudentProfilePage({ params }: { params: Promise<{ studentId: string }> }) {
   const { studentId } = await params;
@@ -77,9 +78,12 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
             </h1>
             <p style={{ fontSize: 13, color: "var(--text-muted)" }}>{student.email}</p>
           </div>
-          {notEnrolled.length > 0 && (
-            <EnrollButton studentId={studentId} courses={notEnrolled} />
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            {notEnrolled.length > 0 && (
+              <EnrollButton studentId={studentId} courses={notEnrolled} />
+            )}
+            <DeleteStudentButton studentId={studentId} studentName={student.name} />
+          </div>
         </div>
       </div>
 
