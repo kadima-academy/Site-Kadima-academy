@@ -134,19 +134,23 @@ export default function LoginPage() {
 
           {/* Logo */}
           <div className="login-logo-wrap" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 32 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo-nova.png"
-              alt="Kadima Academy"
-              className="login-logo-img"
-              style={{
-                width: 110,
-                height: 110,
-                objectFit: "contain",
-                marginBottom: 16,
-                filter: "drop-shadow(0 0 28px rgba(201,169,122,0.35))",
-              }}
-            />
+            <div className="login-logo-img" style={{
+              width: 110, height: 110, borderRadius: "50%",
+              background: "#fff",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              marginBottom: 16,
+              boxShadow: "0 0 0 3px rgba(201,169,122,0.35), 0 0 32px rgba(201,169,122,0.30)",
+              border: "2px solid rgba(201,169,122,0.50)",
+              overflow: "hidden",
+              flexShrink: 0,
+            }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-nova.png"
+                alt="Kadima Academy"
+                style={{ width: 96, height: 96, objectFit: "contain" }}
+              />
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{ width: 40, height: 1, background: "linear-gradient(90deg, transparent, rgba(201,169,122,0.40))" }} />
               <span style={{ fontFamily: "'Cinzel',serif", fontSize: 9, fontWeight: 400, letterSpacing: 4, color: "rgba(201,169,122,0.45)", textTransform: "uppercase" }}>
