@@ -276,26 +276,15 @@ export default function LoginPage() {
                   </>
                 )}
               </button>
+              {/* Link cadastro */}
+              <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.30)", fontFamily: "'Poppins',sans-serif", marginTop: 4 }}>
+                Não tem conta?{" "}
+                <Link href="/cadastro" style={{ color: "rgba(201,169,122,0.70)", textDecoration: "none", fontWeight: 500 }}>
+                  Cadastrar
+                </Link>
+              </p>
             </form>
           </div>
-
-          {/* Botão cadastro — fora do card */}
-          <Link href="/cadastro" style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            marginTop: 14, padding: "13px 24px", borderRadius: 14,
-            border: "1px solid rgba(201,169,122,0.25)",
-            background: "rgba(201,169,122,0.06)",
-            fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 12,
-            letterSpacing: 2.5, textTransform: "uppercase" as const,
-            color: "rgba(201,169,122,0.80)", textDecoration: "none",
-            transition: "all 0.2s",
-          }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
-            </svg>
-            Criar Conta
-          </Link>
 
           <p style={{ textAlign: "center", fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.12)", marginTop: 24, fontFamily: "'Cinzel',serif" }}>
             © {new Date().getFullYear()} Kadima Academy
