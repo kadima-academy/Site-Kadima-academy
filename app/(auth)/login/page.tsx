@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -275,6 +276,13 @@ export default function LoginPage() {
                   </>
                 )}
               </button>
+              {/* Link cadastro */}
+              <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.30)", fontFamily: "'Poppins',sans-serif", marginTop: 4 }}>
+                Não tem conta?{" "}
+                <Link href="/cadastro" style={{ color: "rgba(201,169,122,0.70)", textDecoration: "none", fontWeight: 500 }}>
+                  Cadastrar
+                </Link>
+              </p>
             </form>
           </div>
 
