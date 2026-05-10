@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { getYoutubeId, getGoogleDriveImageUrl } from "@/lib/utils";
 import { Plus, Trash2, ChevronDown, ChevronRight, Eye, EyeOff, Pencil, X, Check } from "lucide-react";
 
-type Lesson = { id: string; title: string; youtubeUrl: string; duration: string | null; content: string | null; order: number };
+type Lesson = { id: string; title: string; youtubeUrl: string; duration: string | null; content: string | null; order: number; releaseAfterDays: number };
 type Module = { id: string; title: string; thumbnail: string | null; order: number; lessons: Lesson[] };
 type Course = { id: string; title: string; description: string | null; thumbnail: string | null; price: number | null; paymentType: "ONE_TIME" | "MONTHLY"; published: boolean; modules: Module[] };
 
@@ -23,9 +23,9 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
   const [newModuleThumbnail, setNewModuleThumbnail] = useState("");
   const [addingModule, setAddingModule] = useState(false);
   const [addingLesson, setAddingLesson] = useState<string | null>(null);
-  const [newLesson, setNewLesson] = useState({ title: "", youtubeUrl: "", duration: "", content: "" });
+  const [newLesson, setNewLesson] = useState({ title: "", youtubeUrl: "", duration: "", content: "", releaseAfterDays: 0 });
   const [editingLesson, setEditingLesson] = useState<string | null>(null);
-  const [editLesson, setEditLesson] = useState({ title: "", youtubeUrl: "", duration: "", content: "" });
+  const [editLesson, setEditLesson] = useState({ title: "", youtubeUrl: "", duration: "", content: "", releaseAfterDays: 0 });
   const [editSaving, setEditSaving] = useState(false);
 
   async function saveCourse() {
@@ -68,7 +68,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
     });
     const lesson = await res.json();
     setCourse(c => ({ ...c, modules: c.modules.map(m => m.id === moduleId ? { ...m, lessons: [...m.lessons, lesson] } : m) }));
-    setNewLesson({ title: "", youtubeUrl: "", duration: "", content: "" });
+    setNewLesson({ title: "", youtubeUrl: "", duration: "", content: "", releaseAfterDays: 0 });
     setAddingLesson(null);
   }
 
@@ -80,7 +80,7 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
 
   function startEditLesson(lesson: Lesson) {
     setEditingLesson(lesson.id);
-    setEditLesson({ title: lesson.title, youtubeUrl: lesson.youtubeUrl, duration: lesson.duration ?? "", content: lesson.content ?? "" });
+    setEditLesson({ title: lesson.title, youtubeUrl: lesson.youtubeUrl, duration: lesson.duration ?? "", content: lesson.content ?? "", releaseAfterDays: lesson.releaseAfterDays ?? 0 });
   }
 
   async function saveEditLesson(moduleId: string, lessonId: string) {
@@ -294,7 +294,13 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                           <p style={{ ...S.label, marginBottom: 0 }}>Editando Aula</p>
                           <div style={S.field}><label style={S.label}>Título</label><input style={S.input} value={editLesson.title} onChange={e => setEditLesson(l => ({ ...l, title: e.target.value }))} /></div>
                           <div style={S.field}><label style={S.label}>Link YouTube</label><input style={S.input} value={editLesson.youtubeUrl} onChange={e => setEditLesson(l => ({ ...l, youtubeUrl: e.target.value }))} /></div>
-                          <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={editLesson.duration} onChange={e => setEditLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                            <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={editLesson.duration} onChange={e => setEditLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                            <div style={S.field}>
+                              <label style={S.label}>Liberar após (dias) <span style={{ color: "rgba(255,255,255,0.25)", fontFamily: "'Poppins',sans-serif", fontSize: 9, letterSpacing: 0, textTransform: "none", fontWeight: 400 }}>0 = imediato</span></label>
+                              <input type="number" min="0" style={S.input} value={editLesson.releaseAfterDays} onChange={e => setEditLesson(l => ({ ...l, releaseAfterDays: parseInt(e.target.value) || 0 }))} placeholder="0" />
+                            </div>
+                          </div>
                           <div style={S.field}>
                             <label style={S.label}>Conteúdo HTML (apostila)</label>
                             <textarea value={editLesson.content} onChange={e => setEditLesson(l => ({ ...l, content: e.target.value }))} style={S.textarea} rows={10} placeholder="Cole o HTML da apostila..." />
@@ -329,6 +335,9 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                             {lesson.content && (
                               <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 6, background: "rgba(201,169,122,0.1)", color: "#C9A97A", border: "1px solid rgba(201,169,122,0.2)", fontFamily: "'Cinzel',serif", letterSpacing: 2, fontWeight: 600 }}>HTML</span>
                             )}
+                            {lesson.releaseAfterDays > 0 && (
+                              <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 6, background: "rgba(99,179,237,0.1)", color: "#63B3ED", border: "1px solid rgba(99,179,237,0.25)", fontFamily: "'Cinzel',serif", letterSpacing: 1, fontWeight: 600 }}>+{lesson.releaseAfterDays}d</span>
+                            )}
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: 4 }}>
@@ -349,7 +358,13 @@ export default function CourseEditor({ course: initial }: { course: Course }) {
                     <p style={{ ...S.label, marginBottom: 0 }}>Nova Aula</p>
                     <div style={S.field}><label style={S.label}>Título *</label><input style={S.input} value={newLesson.title} onChange={e => setNewLesson(l => ({ ...l, title: e.target.value }))} placeholder="Ex: Introdução ao Módulo" /></div>
                     <div style={S.field}><label style={S.label}>Link YouTube *</label><input style={S.input} value={newLesson.youtubeUrl} onChange={e => setNewLesson(l => ({ ...l, youtubeUrl: e.target.value }))} placeholder="https://youtu.be/..." /></div>
-                    <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={newLesson.duration} onChange={e => setNewLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <div style={S.field}><label style={S.label}>Duração</label><input style={S.input} value={newLesson.duration} onChange={e => setNewLesson(l => ({ ...l, duration: e.target.value }))} placeholder="Ex: 45min" /></div>
+                      <div style={S.field}>
+                        <label style={S.label}>Liberar após (dias) <span style={{ color: "rgba(255,255,255,0.25)", fontFamily: "'Poppins',sans-serif", fontSize: 9, letterSpacing: 0, textTransform: "none", fontWeight: 400 }}>0 = imediato</span></label>
+                        <input type="number" min="0" style={S.input} value={newLesson.releaseAfterDays} onChange={e => setNewLesson(l => ({ ...l, releaseAfterDays: parseInt(e.target.value) || 0 }))} placeholder="0" />
+                      </div>
+                    </div>
                     <div style={S.field}>
                       <label style={S.label}>Conteúdo HTML (apostila)</label>
                       <textarea value={newLesson.content} onChange={e => setNewLesson(l => ({ ...l, content: e.target.value }))} style={S.textarea} rows={8} placeholder="Cole aqui o HTML da apostila..." />

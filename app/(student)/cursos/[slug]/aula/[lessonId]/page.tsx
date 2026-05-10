@@ -38,7 +38,13 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
   const currentIndex = allLessons.findIndex(l => l.id === lessonId);
   if (currentIndex === -1) notFound();
 
+  // Drip content check
+  const enrolledAt = enrollment.createdAt;
+  const daysSinceEnrollment = Math.floor((Date.now() - enrolledAt.getTime()) / 86400000);
   const lesson = allLessons[currentIndex];
+
+  if (lesson.releaseAfterDays > daysSinceEnrollment) redirect(`/cursos/${slug}?bloqueada=1`);
+
   const prev = allLessons[currentIndex - 1] ?? null;
   const next = allLessons[currentIndex + 1] ?? null;
   const ytId = getYoutubeId(lesson.youtubeUrl);
@@ -239,6 +245,23 @@ export default async function AulaPage({ params }: { params: Promise<{ slug: str
               {mod.lessons.map((l) => {
                 const active = l.id === lessonId;
                 const lDone = l.progress[0]?.completed;
+                const isLocked = l.releaseAfterDays > daysSinceEnrollment;
+                const daysLeft = l.releaseAfterDays - daysSinceEnrollment;
+
+                if (isLocked) {
+                  return (
+                    <div key={l.id} className="ka-lesson-item" style={{ opacity: 0.5, cursor: "default" }} title={`Disponível em ${daysLeft} dia${daysLeft !== 1 ? "s" : ""}`}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      </svg>
+                      <span style={{ fontSize: 12, lineHeight: 1.4, color: "var(--text-muted)", fontFamily: "'Poppins',sans-serif" }}>
+                        {l.title}
+                        <span style={{ display: "block", fontSize: 9, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>em {daysLeft}d</span>
+                      </span>
+                    </div>
+                  );
+                }
+
                 return (
                   <Link key={l.id} href={`/cursos/${slug}/aula/${l.id}`}
                     className={`ka-lesson-item${active ? " active" : ""}`}

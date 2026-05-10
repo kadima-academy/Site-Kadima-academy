@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getGoogleDriveImageUrl } from "@/lib/utils";
 import CourseThumbnail from "@/components/student/course-thumbnail";
@@ -26,10 +26,16 @@ export default async function CursoPage({ params }: { params: Promise<{ slug: st
   });
   if (!course) notFound();
 
+  const enrollment = await prisma.enrollment.findUnique({
+    where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
+  });
+  if (!enrollment) redirect("/dashboard");
+
   const allLessons = course.modules.flatMap(m => m.lessons);
   const totalDone = allLessons.filter(l => l.progress[0]?.completed).length;
   const total = allLessons.length;
   const coursePct = total > 0 ? Math.round((totalDone / total) * 100) : 0;
+  const isConcluded = total > 0 && totalDone === total && course.paymentType === "ONE_TIME";
 
   return (
     <div style={{ minHeight: "100%", background: "linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-mid) 100%)" }}>
@@ -76,6 +82,23 @@ export default async function CursoPage({ params }: { params: Promise<{ slug: st
               <span style={{ fontSize: 11, fontWeight: 700, color: "var(--gold-light)", fontFamily: "'Cinzel',serif" }}>{coursePct}%</span>
               <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{totalDone}/{total} aulas</span>
             </div>
+            {isConcluded && (
+              <Link href={`/certificado/${course.id}`} style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                padding: "8px 16px", borderRadius: 10,
+                background: "linear-gradient(135deg, rgba(110,231,183,0.15), rgba(16,185,129,0.08))",
+                border: "1px solid rgba(110,231,183,0.30)",
+                color: "#6ee7b7", textDecoration: "none",
+                fontSize: 10, fontFamily: "'Cinzel',serif", fontWeight: 700,
+                letterSpacing: 2, textTransform: "uppercase",
+                marginTop: 10,
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Ver Certificado
+              </Link>
+            )}
           </div>
         </div>
       </div>

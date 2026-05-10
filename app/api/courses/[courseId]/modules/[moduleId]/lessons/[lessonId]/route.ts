@@ -9,6 +9,7 @@ const schema = z.object({
   description: z.string().optional(),
   content: z.string().optional(),
   duration: z.string().optional(),
+  releaseAfterDays: z.number().int().min(0).optional(),
 });
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ lessonId: string }> }) {
